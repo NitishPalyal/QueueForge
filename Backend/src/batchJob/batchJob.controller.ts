@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import type { APIResponse } from "../shared/types.ts";
+import { logger } from "../shared/logger.ts";
 import { FolderName, isMimeType } from "../queues/image/image.types.ts";
 import { uploadToStorageService } from "../queues/image/image.service.ts";
 import type { createBatchControllerBody } from "./batchJob.types.ts";
@@ -45,8 +46,11 @@ export async function uploadImageController(
       data: { uploadedImageKey },
     });
   } catch (error) {
-    console.error("Error in uploadImageController.");
-    console.error(error);
+    logger.error(
+      "Error in uploadImageController",
+      "batchJob.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to upload image.",
@@ -77,8 +81,11 @@ export async function createBatchJobController(
       data: { batchId: batch.id },
     });
   } catch (error) {
-    console.error("Error in createBatchJobController.");
-    console.error(error);
+    logger.error(
+      "Error in createBatchJobController",
+      "batchJob.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to create batch job.",
@@ -105,8 +112,11 @@ export async function getAllBatchesController(
       data: { batches },
     });
   } catch (error) {
-    console.error("Error in getAllBatchesController.");
-    console.error(error);
+    logger.error(
+      "Error in getAllBatchesController",
+      "batchJob.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to retrieve batches.",
@@ -143,8 +153,11 @@ export async function getBatchJobsByIdController(
       data: { batchjobs },
     });
   } catch (error) {
-    console.error("Error in getBatchJobsController.");
-    console.error(error);
+    logger.error(
+      "Error in getBatchJobsController",
+      "batchJob.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to retrieve batch jobs.",
@@ -182,8 +195,11 @@ export async function deleteBatchByIdController(
       message: "Batch job deleted successfully.",
     });
   } catch (error) {
-    console.error("Error in deleteBatchJobController.");
-    console.error(error);
+    logger.error(
+      "Error in deleteBatchByIdController",
+      "batchJob.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to delete batch job.",

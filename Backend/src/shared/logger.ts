@@ -42,7 +42,7 @@ function shouldLog(level: LogLevel): boolean {
 /**
  * Formats a log entry for console output.
  */
-function formatLogEntry(entry: LogEntry): string {
+function formatLogEntry(entry: any): string {
   const levelUpper = entry.level.toUpperCase().padEnd(5);
   const timestamp = entry.timestamp;
   const context = entry.context ? ` [${entry.context}]` : "";
@@ -75,9 +75,9 @@ export const logger = {
   debug(message: string, context?: string, data?: unknown): void {
     if (!shouldLog("debug")) return;
 
-    const entry: LogEntry = {
+    const entry = {
       timestamp: new Date().toISOString(),
-      level: "debug",
+      level: "debug" as const,
       message,
       context,
       data,
@@ -95,9 +95,9 @@ export const logger = {
   info(message: string, context?: string, data?: unknown): void {
     if (!shouldLog("info")) return;
 
-    const entry: LogEntry = {
+    const entry = {
       timestamp: new Date().toISOString(),
-      level: "info",
+      level: "info" as const,
       message,
       context,
       data,
@@ -115,9 +115,9 @@ export const logger = {
   warn(message: string, context?: string, data?: unknown): void {
     if (!shouldLog("warn")) return;
 
-    const entry: LogEntry = {
+    const entry = {
       timestamp: new Date().toISOString(),
-      level: "warn",
+      level: "warn" as const,
       message,
       context,
       data,
@@ -135,9 +135,9 @@ export const logger = {
   error(message: string, context?: string, error?: unknown): void {
     if (!shouldLog("error")) return;
 
-    const entry: LogEntry = {
+    const entry = {
       timestamp: new Date().toISOString(),
-      level: "error",
+      level: "error" as const,
       message,
       context,
       data: error instanceof Error ? error.message : error,

@@ -1,5 +1,6 @@
 import transporter from "./mail.config.ts";
 import { mailQueue } from "./mail.queue.ts";
+import { logger } from "../../shared/logger.ts";
 import type { MailQueuePayload, SendmailOptions } from "./mail.types.ts";
 
 // SEND EMAIL //
@@ -20,8 +21,7 @@ export async function sendEmailService({
     const details = await transporter.sendMail(mailOptions);
     return details;
   } catch (error) {
-    console.error("Error in sendEmailService");
-    console.error(error);
+    logger.error("Error in sendEmailService", "mail.service", error);
     throw error;
   }
 }
@@ -53,8 +53,7 @@ export async function addJobInMailQueueService({
       },
     );
   } catch (error) {
-    console.error("Error in addJobInMailQueueService.");
-    console.error(error);
+    logger.error("Error in addJobInMailQueueService", "mail.service", error);
     throw error;
   }
 }

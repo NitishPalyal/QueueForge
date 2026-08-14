@@ -1,5 +1,6 @@
 import { Worker } from "bullmq";
 import { connection } from "../../shared/connection.ts";
+import { logger } from "../../shared/logger.ts";
 import { sendEmailService } from "./mail.service.ts";
 import * as jobRepo from "../../job/job.repository.ts";
 import { finishStepService } from "../../batchJob/batchJob.service.ts";
@@ -30,9 +31,9 @@ export const mailWorker = new Worker(
 mailWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
   const jobId = String(job.id);
-  console.log(
-    "Updating job attempt in MAIl WORKER for ID:",
-    job.data.dbJobId || (job.id as string),
+  logger.info(
+    `Updating job attempt in MAIL WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
+    "mail.worker",
   );
   Promise.all([
     jobRepo.setStatusActive(jobPayload.dbJobId || jobId),

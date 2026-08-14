@@ -1,6 +1,7 @@
 import { Worker } from "bullmq";
 import { connection } from "../../shared/connection.ts";
 import os from "node:os";
+import { logger } from "../../shared/logger.ts";
 
 import * as jobRepo from "../../job/job.repository.ts";
 import { imageProcessingService } from "./image.service.ts";
@@ -40,9 +41,9 @@ export const imageWorker = new Worker(
 imageWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
   const jobId = String(job.id);
-  console.log(
-    "Updating job attempt in IMAGE WORKER for ID:",
-    job.data.dbJobId || (job.id as string),
+  logger.info(
+    `Updating job attempt in IMAGE WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
+    "image.worker",
   );
   Promise.all([
     jobRepo.setStatusActive(jobPayload.dbJobId || jobId),

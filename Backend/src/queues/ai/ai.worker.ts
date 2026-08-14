@@ -1,5 +1,6 @@
 import { Worker } from "bullmq";
 import { connection } from "../../shared/connection.ts";
+import { logger } from "../../shared/logger.ts";
 import * as jobRepo from "../../job/job.repository.ts";
 import {
   generateAiResponseForEmailService,
@@ -68,9 +69,9 @@ export const aiWorker = new Worker(
 aiWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
   const jobId = String(job.id);
-  console.log(
-    "Updating job attempt in AI WORKER for ID:",
-    job.data.dbJobId || (job.id as string),
+  logger.info(
+    `Updating job attempt in AI WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
+    "ai.worker",
   );
   Promise.all([
     jobRepo.setStatusActive(jobPayload.dbJobId || jobId),

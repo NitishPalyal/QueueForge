@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import * as userRepo from "./auth.repository.ts";
+import { logger } from "../shared/logger.ts";
 import type {
   ComparePasswordServiceParam,
   findUserByEmailAndFullnameServiceParam,
@@ -9,8 +10,7 @@ export async function hashPasswordService(password: string): Promise<string> {
   try {
     return argon2.hash(password);
   } catch (error) {
-    console.error("Error in hashPasswordService.");
-    console.error(error);
+    logger.error("Error in hashPasswordService", "auth.service", error);
     throw error;
   }
 }
@@ -22,8 +22,7 @@ export async function comparePasswordService({
   try {
     return argon2.verify(hashedPassword, password);
   } catch (error) {
-    console.error("Error in comparePasswordService.");
-    console.error(error);
+    logger.error("Error in comparePasswordService", "auth.service", error);
     throw error;
   }
 }
@@ -36,8 +35,11 @@ export async function findUserByEmailAndFullnameService({
     const isExist = await userRepo.findByEmailAndFullname(email, fullname);
     return Boolean(isExist);
   } catch (error) {
-    console.error("Error in findUserByEmailAndFullnameService.");
-    console.error(error);
+    logger.error(
+      "Error in findUserByEmailAndFullnameService",
+      "auth.service",
+      error,
+    );
     throw error;
   }
 }

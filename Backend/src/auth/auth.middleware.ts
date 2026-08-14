@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import * as userRepo from "./auth.repository.ts";
 import jwt from "jsonwebtoken";
+import { logger } from "../shared/logger.ts";
 import type { JwtPayloadWithId } from "./auth.types.ts";
 
 /**
@@ -37,7 +38,7 @@ export const authenticateUserMiddleware = async (
     req.user = user;
     next();
   } catch (err) {
-    console.error("Authentication error:", err);
+    logger.error("Authentication error", "auth.middleware", err);
     return res.status(401).json({ message: "Unauthorized" });
   }
 };

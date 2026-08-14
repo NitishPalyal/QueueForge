@@ -1,5 +1,6 @@
 import * as jobRepo from "../../job/job.repository.ts";
 import { MailSchema } from "../../shared/zod.schema.ts";
+import { logger } from "../../shared/logger.ts";
 import { addJobInMailQueueService } from "../mail/mail.service.ts";
 import { aiQueue } from "./ai.queue.ts";
 import { providers } from "./ai.providers.ts";
@@ -17,18 +18,22 @@ export async function generateAiContentService(
   prompt: string,
 ): Promise<string> {
   for (const provider of providers) {
-    console.log(`Trying provider: ${provider.name}`);
+    logger.debug(`Trying provider: ${provider.name}`, "ai.service");
 
     for (const model of provider.models) {
       try {
         const result = await model.generate(prompt);
         return result;
       } catch (error) {
-        console.error(`Failed: ${provider.name}/${model.name}`, error);
+        logger.warn(
+          `Failed: ${provider.name}/${model.name}`,
+          "ai.service",
+          error,
+        );
       }
     }
   }
-  console.error("Error in generateAiContentService.");
+  logger.error("Error in generateAiContentService", "ai.service");
   throw new Error("All AI providers and models failed");
 }
 
@@ -106,8 +111,7 @@ export async function generateMailContentService({
 
     return newPayload;
   } catch (error) {
-    console.error("Error in generateMailContentService.");
-    console.error(error);
+    logger.error("Error in generateMailContentService", "ai.service", error);
     throw error;
   }
 }
@@ -126,8 +130,7 @@ export async function generateAiResponseService({
 
     await jobRepo.updateJobPayload({ id: jobId, payload: newPayload });
   } catch (error) {
-    console.error("Error in generateAiContentService.");
-    console.error(error);
+    logger.error("Error in generateAiResponseService", "ai.service", error);
     throw error;
   }
 }
@@ -157,8 +160,11 @@ export async function generateAiResponseForEmailService({
     ];
     await Promise.all(promises);
   } catch (error) {
-    console.error("Error in generateAiResponseForEmailService.");
-    console.error(error);
+    logger.error(
+      "Error in generateAiResponseForEmailService",
+      "ai.service",
+      error,
+    );
     throw error;
   }
 }
@@ -188,8 +194,7 @@ export async function addJobInAiQueueService({
       },
     );
   } catch (error) {
-    console.error("Error in addJobInAiQueueService.");
-    console.error(error);
+    logger.error("Error in addJobInAiQueueService", "ai.service", error);
     throw error;
   }
 }

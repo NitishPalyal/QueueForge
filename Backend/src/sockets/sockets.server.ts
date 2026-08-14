@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
+import { logger } from "../shared/logger.ts";
 
 let io: Server;
 
@@ -11,10 +12,10 @@ export function initializeSocket(server: HttpServer) {
   });
 
   io.on("connection", (socket) => {
-    console.log(`Client Connected : ${socket.id}`);
+    logger.info(`Client connected: ${socket.id}`, "sockets.server");
 
     socket.on("disconnect", () => {
-      console.log(`Client Disconnected : ${socket.id}`);
+      logger.info(`Client disconnected: ${socket.id}`, "sockets.server");
     });
   });
 

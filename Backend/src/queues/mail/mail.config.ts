@@ -2,6 +2,7 @@ import type { SendmailOptions } from "./mail.types.ts";
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import configKeys from "../../config/config.ts";
+import { logger } from "../../shared/logger.ts";
 
 const oauth2Client = new google.auth.OAuth2(
   configKeys.GOOGLE_CLIENT_ID,
@@ -29,10 +30,10 @@ const transporter = nodemailer.createTransport({
 transporter
   .verify()
   .then(() => {
-    console.log("Email Trasporter is Ready to send emails");
+    logger.info("Email transporter is ready to send emails", "mail.config");
   })
   .catch((err) => {
-    console.error("Email Trasporter verfication failed:", err);
+    logger.error("Email transporter verification failed", "mail.config", err);
   });
 
 export default transporter;

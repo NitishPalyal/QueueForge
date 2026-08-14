@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { addJobInAiQueueService } from "../queues/ai/ai.service.ts";
 import type { APIResponse } from "../shared/types.ts";
 import type { Status } from "../../generated/prisma/enums.ts";
+import { logger } from "../shared/logger.ts";
 import { FolderName, isMimeType } from "../queues/image/image.types.ts";
 import { ImageJobPayloadSchema } from "../shared/zod.schema.ts";
 import {
@@ -63,8 +64,7 @@ export async function createEmailJobController(
       data: { jodId: job.id, jobStatus: job.status, createdAt: job.createdAt },
     });
   } catch (error) {
-    console.error("Error in createEmailJobController.");
-    console.error(error);
+    logger.error("Error in createEmailJobController", "job.controller", error);
     return res.status(500).json({
       success: false,
       message: "Failed to create email job.",
@@ -108,8 +108,11 @@ export async function createAiResponseJobController(
       data: { jodId: job.id, jobStatus: job.status, createdAt: job.createdAt },
     });
   } catch (error) {
-    console.error("Error in createAiResponseJobController.");
-    console.error(error);
+    logger.error(
+      "Error in createAiResponseJobController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to create Ai Response job.",
@@ -178,8 +181,11 @@ export async function createImageProcessingJobController(
       data: { jodId: job.id, jobStatus: job.status, createdAt: job.createdAt },
     });
   } catch (error) {
-    console.error("Error in createImageProcessingJobController.");
-    console.error(error);
+    logger.error(
+      "Error in createImageProcessingJobController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to create Image Processing job.",
@@ -207,8 +213,7 @@ export async function getAllJobsController(
       data: { totalJobs: jobs.length, jobs },
     });
   } catch (error) {
-    console.error("Error in getAllJobsController.");
-    console.error(error);
+    logger.error("Error in getAllJobsController", "job.controller", error);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch all jobs.",
@@ -268,8 +273,7 @@ export async function getJobByIdController(
       });
     }
   } catch (error) {
-    console.error("Error in getJobController.");
-    console.error(error);
+    logger.error("Error in getJobController", "job.controller", error);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch job.",
@@ -332,8 +336,11 @@ export async function deleteJobByQueueAndIdController(
       });
     }
   } catch (error) {
-    console.error("Error in deleteJobController.");
-    console.error(error);
+    logger.error(
+      "Error in deleteJobByQueueAndIdController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to delete job.",
@@ -368,8 +375,11 @@ export async function getJobStatusByIdController(
       data: { status: job.status },
     });
   } catch (error) {
-    console.error("Error in getJobStatusController.");
-    console.error(error);
+    logger.error(
+      "Error in getJobStatusByIdController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to fetch job status.",
@@ -404,8 +414,11 @@ export async function getAllJobsByStatusController(
       data: { totalJobs: jobs.length, jobs },
     });
   } catch (error) {
-    console.error("Error in getAllStatusJobsController.");
-    console.error(error);
+    logger.error(
+      "Error in getAllJobsByStatusController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to fetch jobs by status.",
@@ -440,8 +453,11 @@ export async function getAllJobsByQueueController(
       data: { totalJobs: jobs.length, jobs },
     });
   } catch (error) {
-    console.error("Error in getAllQueueJobsController.");
-    console.error(error);
+    logger.error(
+      "Error in getAllJobsByQueueController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to fetch jobs by queue.",
@@ -477,8 +493,11 @@ export async function getAllJobsByQueueAndStatusController(
       data: { totalJobs: jobs.length, jobs },
     });
   } catch (error) {
-    console.error("Error in getAllQueueStatusJobsController.");
-    console.error(error);
+    logger.error(
+      "Error in getAllJobsByQueueAndStatusController",
+      "job.controller",
+      error,
+    );
     return res.status(500).json({
       success: false,
       message: "Failed to fetch jobs by queue and status.",

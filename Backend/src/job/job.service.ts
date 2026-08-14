@@ -5,6 +5,7 @@ import {
 } from "../queues/image/image.service.ts";
 import { ImageJobPayloadSchema } from "../shared/zod.schema.ts";
 import * as jobRepo from "./job.repository.ts";
+import { logger } from "../shared/logger.ts";
 import {
   type AiJobInput,
   type AiJobParam,
@@ -43,8 +44,7 @@ export async function createMailJobService({
     const job = await jobRepo.create(input);
     return job;
   } catch (error) {
-    console.error("Error in createMailJobService.");
-    console.error(error);
+    logger.error("Error in createMailJobService", "job.service", error);
     throw error;
   }
 }
@@ -68,8 +68,7 @@ export async function createAiResponseJobService({
     const job = await jobRepo.create(input);
     return job;
   } catch (error) {
-    console.error("Error in createAiResponseJobService.");
-    console.error(error);
+    logger.error("Error in createAiResponseJobService", "job.service", error);
     throw error;
   }
 }
@@ -94,8 +93,11 @@ export async function createImageProcessingJobService({
 
     return job;
   } catch (error) {
-    console.error("Error in createImageProcessingJobService.");
-    console.error(error);
+    logger.error(
+      "Error in createImageProcessingJobService",
+      "job.service",
+      error,
+    );
     throw error;
   }
 }
@@ -108,8 +110,7 @@ export async function getJobService(id: string): Promise<Job> {
     }
     return job;
   } catch (error) {
-    console.error("Error in getJobService.");
-    console.error(error);
+    logger.error("Error in getJobService", "job.service", error);
     throw error;
   }
 }
@@ -119,8 +120,7 @@ export async function getAllJobsService() {
     const jobs = await jobRepo.findAll();
     return jobs;
   } catch (error) {
-    console.error("Error in getAllJobsService.");
-    console.error(error);
+    logger.error("Error in getAllJobsService", "job.service", error);
     throw error;
   }
 }
@@ -153,8 +153,7 @@ export async function deleteJobService({
       await Promise.all(deletePromises);
     }
   } catch (error) {
-    console.error("Error in deleteJobService.");
-    console.error(error);
+    logger.error("Error in deleteJobService", "job.service", error);
     throw error;
   }
 }
@@ -164,8 +163,7 @@ export async function getAllQueueJobsService(queue: string) {
     const jobs = await jobRepo.findByQueueName(queue);
     return jobs;
   } catch (error) {
-    console.error("Error in getAllQueueJobsService.");
-    console.error(error);
+    logger.error("Error in getAllQueueJobsService", "job.service", error);
     throw error;
   }
 }
@@ -175,8 +173,7 @@ export async function getAllStatusJobsService(status: Status) {
     const jobs = await jobRepo.findByStatus(status);
     return jobs;
   } catch (error) {
-    console.error("Error in getAllStatusJobsService.");
-    console.error(error);
+    logger.error("Error in getAllStatusJobsService", "job.service", error);
     throw error;
   }
 }
@@ -189,8 +186,7 @@ export async function getAllQueueStatusJobsService(
     const jobs = await jobRepo.findByQueueNameAndStatus(queue, status);
     return jobs;
   } catch (error) {
-    console.error("Error in getAllQueueStatusJobsService.");
-    console.error(error);
+    logger.error("Error in getAllQueueStatusJobsService", "job.service", error);
     throw error;
   }
 }
@@ -214,8 +210,7 @@ export async function removeJobFromQueueService({
 
     await job.remove();
   } catch (error) {
-    console.error("Error in  removeJobFromQueueService.");
-    console.error(error);
+    logger.error("Error in removeJobFromQueueService", "job.service", error);
     throw error;
   }
 }
@@ -237,8 +232,11 @@ export async function getImageJobUploadedAndProcessedImageUrlService({
 
     return { uploadedImageUrl, processedImageUrl };
   } catch (error) {
-    console.error("Error in getImageJobUploadedAndProcessedImageUrlService.");
-    console.error(error);
+    logger.error(
+      "Error in getImageJobUploadedAndProcessedImageUrlService",
+      "job.service",
+      error,
+    );
     throw error;
   }
 }
@@ -257,8 +255,11 @@ export async function deleteImageJobUploadedAndProcessedImageService({
     ];
     await Promise.all(deleteImagePromises);
   } catch (error) {
-    console.error("Error in deleteImageJobUploadedAndProcessedImageService.");
-    console.error(error);
+    logger.error(
+      "Error in deleteImageJobUploadedAndProcessedImageService",
+      "job.service",
+      error,
+    );
     throw error;
   }
 }

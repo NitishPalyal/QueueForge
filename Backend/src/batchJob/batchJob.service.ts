@@ -4,6 +4,7 @@ import * as BatchJobRepo from "./batchJob.repository.ts";
 import * as JobRepo from "../job/job.repository.ts";
 import type { Batch, Job, Prisma } from "../../generated/prisma/client.ts";
 import { ImageJobPayloadSchema } from "../shared/zod.schema.ts";
+import { logger } from "../shared/logger.ts";
 import {
   QUEUE_BY_TYPE,
   type BatchStepMeta,
@@ -73,8 +74,7 @@ function buildFlowTreeService({
       }),
     );
   } catch (error) {
-    console.error("Error in buildFlowTreeService.");
-    console.error(error);
+    logger.error("Error in buildFlowTreeService", "batchJob.service", error);
     throw error;
   }
 }
@@ -121,8 +121,7 @@ export async function createBatchService({
     );
     return batch;
   } catch (error) {
-    console.error("Error in createBatchService.");
-    console.error(error);
+    logger.error("Error in createBatchService", "batchJob.service", error);
     throw error;
   }
 }
@@ -138,8 +137,7 @@ export async function finishStepService({
       await BatchJobRepo.setStatusCompleted(batchId);
     }
   } catch (error) {
-    console.error("Error in finishStepService.");
-    console.error(error);
+    logger.error("Error in finishStepService", "batchJob.service", error);
     throw error;
   }
 }
@@ -169,8 +167,7 @@ export async function getBatchJobsService(batchId: string): Promise<Job[]> {
       }),
     );
   } catch (error) {
-    console.error("Error in getBatchJobsService.");
-    console.error(error);
+    logger.error("Error in getBatchJobsService", "batchJob.service", error);
     throw error;
   }
 }
@@ -192,8 +189,7 @@ export async function deleteBatchService(batchId: string): Promise<void> {
     );
     await BatchJobRepo.deleteBatch(batchId);
   } catch (error) {
-    console.error("Error in deleteBatchJobService.");
-    console.error(error);
+    logger.error("Error in deleteBatchJobService", "batchJob.service", error);
     throw error;
   }
 }
@@ -203,8 +199,7 @@ export async function getBatchService(batchId: string): Promise<boolean> {
     const batch = await BatchJobRepo.findById(batchId);
     return Boolean(batch);
   } catch (error) {
-    console.error("Error in deleteBatchJobService.");
-    console.error(error);
+    logger.error("Error in getBatchService", "batchJob.service", error);
     throw error;
   }
 }
@@ -214,8 +209,7 @@ export async function getAllBatchesService() {
     const batches = await BatchJobRepo.findAll();
     return batches;
   } catch (error) {
-    console.error("Error in getAllBatchesService.");
-    console.error(error);
+    logger.error("Error in getAllBatchesService", "batchJob.service", error);
     throw error;
   }
 }
