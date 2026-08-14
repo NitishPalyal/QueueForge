@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Status {
+  pending
+  active
+  failed
+  completed
+  delayed
+}
+
+model Job {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type            String    @db.VarChar(100)
+  queue_name      String    @db.VarChar(100)
+  payload         Json      @db.JsonB
+  status          Status    @default(pending)
+  priority        Int       @default(5)
+  attempts        Int       @default(0)
+  max_attempts    Int       @default(3)
+  idempotency_key String    @unique @db.VarChar(255)
+  error           String?
+  result          Json?     @db.JsonB
+  createdAt       DateTime  @default(now()) @map("created_at")
+  startedAt       DateTime? @map("started_at")
+  completedAt     DateTime? @map("completed_at")
+  scheduledFor    DateTime? @map("scheduled_for")
+  stepOrder       Int?      @map("step_order")
+  batchId         String?   @map("batch_id") @db.Uuid
+  batch           Batch?    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
+  @@index([status])
+  @@index([queue_name])
+  @@index([queue_name, status])
+  @@index([createdAt(sort: Desc)])
+  @@map("jobs")
+}
+
+model Batch {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type        String    @db.VarChar(100) // 'image-then-email'
+  status      Status    @default(pending) // reuse your existing enum
+  totalSteps  Int       @map("total_steps")
+  payload     Json      @db.JsonB
+  createdAt   DateTime  @default(now()) @map("created_at")
+  completedAt DateTime? @map("completed_at")
+  jobs        Job[]
+
+  @@index([status])
+  @@map("batches")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  fullname  String   @map("full_name") @db.VarChar(100)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
