@@ -7,34 +7,34 @@ import { ImageJobPayloadSchema } from "../shared/zod.schema.ts";
 import * as jobRepo from "./job.repository.ts";
 import { logger } from "../shared/logger.ts";
 import {
-  type AiJobInput,
-  type AiJobParam,
-  type AiJobPayload,
-  type ImageProcessingJobParam,
-  type MailJobInput,
-  type MailJobParam,
-  type MailJobPayload,
-  type ImageProcessingJobPayload,
-  type ImageProcessingJobInput,
+  type CreateAiResponseJobRepositoryInput,
+  type CreateAiResponseJobServiceParams,
+  type CreateAiResponseJobPayload,
+  type CreateImageProcessingJobServiceParams,
+  type CreateMailJobRepositoryInput,
+  type CreateMailJobServiceParams,
+  type CreateMailJobPayload,
+  type CreateImageProcessingJobPayload,
+  type CreateImageProcessingJobRepositoryInput,
   QUEUES,
-  type removeJobServiceParam,
-  type getImageJobUploadedAndProcessedImageUrlServiceParam,
-  type deleteImageJobUploadedAndProcessedImageServiceParam,
-  type deleteJobServiceParam,
+  type RemoveJobServiceParams,
+  type GetImageJobUploadedAndProcessedImageUrlServiceParams,
+  type DeleteImageJobUploadedAndProcessedImageServiceParams,
+  type DeleteJobServiceParams,
 } from "./job.types.ts";
 
 export async function createMailJobService({
   to,
   prompt,
   idempotency_key,
-}: MailJobParam): Promise<Job> {
+}: CreateMailJobServiceParams): Promise<Job> {
   try {
-    const payload: MailJobPayload = {
+    const payload: CreateMailJobPayload = {
       to,
       prompt,
     };
 
-    const input: MailJobInput = {
+    const input: CreateMailJobRepositoryInput = {
       type: "mail",
       queue_name: "mailQueue",
       payload,
@@ -52,13 +52,13 @@ export async function createMailJobService({
 export async function createAiResponseJobService({
   prompt,
   idempotency_key,
-}: AiJobParam): Promise<Job> {
+}: CreateAiResponseJobServiceParams): Promise<Job> {
   try {
-    const payload: AiJobPayload = {
+    const payload: CreateAiResponseJobPayload = {
       prompt,
     };
 
-    const input: AiJobInput = {
+    const input: CreateAiResponseJobRepositoryInput = {
       type: "ai",
       queue_name: "aiQueue",
       payload,
@@ -76,13 +76,13 @@ export async function createAiResponseJobService({
 export async function createImageProcessingJobService({
   uploadedImageKey,
   idempotency_key,
-}: ImageProcessingJobParam): Promise<Job> {
+}: CreateImageProcessingJobServiceParams): Promise<Job> {
   try {
-    const payload: ImageProcessingJobPayload = {
+    const payload: CreateImageProcessingJobPayload = {
       uploadedImageKey,
     };
 
-    const input: ImageProcessingJobInput = {
+    const input: CreateImageProcessingJobRepositoryInput = {
       type: "image",
       queue_name: "imageQueue",
       payload,
@@ -130,7 +130,7 @@ export async function deleteJobService({
   jobId,
   payload,
   queueName,
-}: deleteJobServiceParam) {
+}: DeleteJobServiceParams) {
   try {
     if (isImage) {
       const imagePayload = ImageJobPayloadSchema.parse(payload);
@@ -194,7 +194,7 @@ export async function getAllQueueStatusJobsService(
 export async function removeJobFromQueueService({
   jobId,
   queueName,
-}: removeJobServiceParam): Promise<void> {
+}: RemoveJobServiceParams): Promise<void> {
   try {
     const queue = QUEUES[queueName];
 
@@ -218,7 +218,7 @@ export async function removeJobFromQueueService({
 export async function getImageJobUploadedAndProcessedImageUrlService({
   processedImageKey,
   uploadedImageKey,
-}: getImageJobUploadedAndProcessedImageUrlServiceParam): Promise<{
+}: GetImageJobUploadedAndProcessedImageUrlServiceParams): Promise<{
   uploadedImageUrl: string;
   processedImageUrl: string | null;
 }> {
@@ -244,7 +244,7 @@ export async function getImageJobUploadedAndProcessedImageUrlService({
 export async function deleteImageJobUploadedAndProcessedImageService({
   processedImageKey,
   uploadedImageKey,
-}: deleteImageJobUploadedAndProcessedImageServiceParam) {
+}: DeleteImageJobUploadedAndProcessedImageServiceParams) {
   try {
     const deleteImagePromises = [
       deleteFromStorageService(uploadedImageKey),

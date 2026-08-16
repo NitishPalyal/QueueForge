@@ -22,10 +22,6 @@ import {
   getImageJobUploadedAndProcessedImageUrlService,
 } from "../job/job.service.ts";
 
-function attachBatchInfo<T>(data: T, meta: BatchStepMeta): T & BatchStepMeta {
-  return { ...data, ...meta };
-}
-
 function buildFlowTreeService({
   steps,
   jobs,
@@ -213,14 +209,3 @@ export async function getAllBatchesService() {
     throw error;
   }
 }
-
-// export async function getBatchService(batchId: string) {
-//   try {
-//     const batch = await BatchJobRepo.findById(batchId);
-//     return batch;
-//   } catch (error) {
-//     console.error("Error in getBatchService.");
-//     console.error(error);
-//     throw error;
-//   }
-// }

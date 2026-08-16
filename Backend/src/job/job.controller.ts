@@ -61,7 +61,7 @@ export async function createEmailJobController(
     res.status(202).json({
       success: true,
       message: "Email Job created and added to Queue successfully.",
-      data: { jodId: job.id, jobStatus: job.status, createdAt: job.createdAt },
+      data: { jobId: job.id, jobStatus: job.status, createdAt: job.createdAt },
     });
   } catch (error) {
     logger.error("Error in createEmailJobController", "job.controller", error);
@@ -105,7 +105,7 @@ export async function createAiResponseJobController(
     res.status(202).json({
       success: true,
       message: "Ai Job created and added to Queue successfully.",
-      data: { jodId: job.id, jobStatus: job.status, createdAt: job.createdAt },
+      data: { jobId: job.id, jobStatus: job.status, createdAt: job.createdAt },
     });
   } catch (error) {
     logger.error(
@@ -178,7 +178,7 @@ export async function createImageProcessingJobController(
     res.status(202).json({
       success: true,
       message: "Image Processing Job created and added to Queue successfully.",
-      data: { jodId: job.id, jobStatus: job.status, createdAt: job.createdAt },
+      data: { jobId: job.id, jobStatus: job.status, createdAt: job.createdAt },
     });
   } catch (error) {
     logger.error(

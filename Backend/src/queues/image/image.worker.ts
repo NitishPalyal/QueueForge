@@ -4,25 +4,14 @@ import os from "node:os";
 import { logger } from "../../shared/logger.ts";
 
 import * as jobRepo from "../../job/job.repository.ts";
-import { imageProcessingService } from "./image.service.ts";
 import { finishStepService } from "../../batchJob/batchJob.service.ts";
 import { WorkerSchema } from "../../shared/zod.schema.ts";
 import { ImageWorkerProcessingServiceDataSchema } from "./image.zodSchema.ts";
+import path from "node:path";
 
 export const imageWorker = new Worker(
   "image",
-  async (job) => {
-    const jobId = job.id;
-
-    if (!jobId) {
-      throw new Error("Missing job id in image worker");
-    }
-    const jobPayload = ImageWorkerProcessingServiceDataSchema.parse(job.data);
-    await imageProcessingService({
-      jobId: jobPayload.dbJobId || jobId,
-      uploadedImageKey: jobPayload.jobData.uploadedImageKey,
-    });
-  },
+  path.join(__dirname, "image.processor.ts"),
   {
     connection,
     removeOnComplete: {
