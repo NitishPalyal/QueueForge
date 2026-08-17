@@ -12,6 +12,7 @@ import {
   getAllJobsController,
   getJobByIdController,
   getJobStatusByIdController,
+  retryJobByQueueAndIdController,
 } from "./job.controller.ts";
 import {
   createAiResponseJobValidator,
@@ -23,6 +24,7 @@ import {
   getAllJobsByStatusValidator,
   getJobByIdValidator,
   getJobStatusByIdValidator,
+  retryJobByQueueAndIdValidator,
 } from "./job.validator.ts";
 
 const jobRouter = Router();
@@ -70,6 +72,14 @@ jobRouter.delete(
   deleteJobByQueueAndIdController,
 );
 
+// RETRY JOB /:QUEUE/:ID //
+jobRouter.post(
+  "/retryJob/:queue/:id",
+  userAuthValidator,
+  retryJobByQueueAndIdValidator,
+  retryJobByQueueAndIdController,
+);
+
 // GET JOB STATUS/:ID //
 jobRouter.get(
   "/getJobStatus/:id",
@@ -100,6 +110,14 @@ jobRouter.get(
   userAuthValidator,
   getAllJobsByQueueAndStatusValidator,
   getAllJobsByQueueAndStatusController,
+);
+
+//RETRY JOB /:QUEUE/:ID//
+jobRouter.get(
+  "/retryJob/:id/:queue",
+  userAuthValidator,
+  retryJobByQueueAndIdValidator,
+  retryJobByQueueAndIdController,
 );
 
 export default jobRouter;

@@ -116,6 +116,15 @@ export async function setBatchIdAndStepOrder(
   });
 }
 
+export async function setStatusPending(id: string) {
+  await prisma.job.update({
+    where: { id },
+    data: {
+      status: Status.pending,
+    },
+  });
+}
+
 export async function setStatusActive(id: string) {
   await prisma.job.update({
     where: { id },
@@ -123,6 +132,13 @@ export async function setStatusActive(id: string) {
       status: Status.active,
       startedAt: new Date(),
     },
+  });
+}
+
+export async function updateJobPriority(id: string, priority: number) {
+  await prisma.job.update({
+    where: { id },
+    data: { priority },
   });
 }
 

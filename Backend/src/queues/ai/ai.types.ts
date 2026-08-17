@@ -1,4 +1,5 @@
 import type { Prisma } from "../../../generated/prisma/client.ts";
+import type { JobPriority } from "../../job/job.types.ts";
 
 // MAIL JOB //
 export interface AiMailJobPayload extends Prisma.InputJsonObject {
@@ -43,6 +44,7 @@ export interface AiQueuePayload {
   isMail: Boolean;
   batchId?: string;
   isLastStep: boolean;
+  priority?: JobPriority;
 }
 
 // AI PROVIDERS //

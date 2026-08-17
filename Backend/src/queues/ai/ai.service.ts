@@ -176,6 +176,7 @@ export async function addJobInAiQueueService({
   batchId,
   isLastStep,
   jobId,
+  priority,
 }: AiQueuePayload) {
   try {
     aiQueue.add(
@@ -191,6 +192,7 @@ export async function addJobInAiQueueService({
         jobId,
         backoff: { type: "exponential", delay: 3000 },
         attempts: 3,
+        ...(priority !== undefined ? { priority } : {}),
       },
     );
   } catch (error) {

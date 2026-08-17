@@ -32,6 +32,7 @@ export async function addJobInMailQueueService({
   jobId,
   batchId,
   isLastStep,
+  priority,
 }: MailQueuePayload) {
   try {
     mailQueue.add(
@@ -50,6 +51,7 @@ export async function addJobInMailQueueService({
         jobId,
         backoff: { type: "exponential", delay: 3000 },
         attempts: 3,
+        ...(priority !== undefined ? { priority } : {}),
       },
     );
   } catch (error) {

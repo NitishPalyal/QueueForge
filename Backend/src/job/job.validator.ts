@@ -33,6 +33,12 @@ export const createEmailJobValidator = [
     .withMessage("Idempotency key is required")
     .isLength({ min: 10 })
     .withMessage("Idempotency key must be at least 10 characters long"),
+
+  body("priority")
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage("Priority is required")
+    .isInt({ min: 1, max: 10 })
+    .withMessage("Priority must be an integer between 1 and 10"),
   validate,
 ];
 
@@ -48,6 +54,12 @@ export const createAiResponseJobValidator = [
     .withMessage("Idempotency key is required")
     .isLength({ min: 10 })
     .withMessage("Idempotency key must be at least 10 characters long"),
+
+  body("priority")
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage("Priority is required")
+    .isInt({ min: 1, max: 10 })
+    .withMessage("Priority must be an integer between 1 and 10"),
   validate,
 ];
 
@@ -57,6 +69,12 @@ export const createImageProcessingJobValidator = [
     .withMessage("Idempotency key is required")
     .isLength({ min: 10 })
     .withMessage("Idempotency key must be at least 10 characters long"),
+
+  header("priority")
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage("Priority is required")
+    .isInt({ min: 1, max: 10 })
+    .withMessage("Priority must be an integer between 1 and 10"),
 
   check("image").custom((_, { req }) => {
     if (!req.file) {
@@ -99,6 +117,21 @@ export const getJobByIdValidator = [
 ];
 
 export const deleteJobByQueueAndIdValidator = [
+  param("id")
+    .notEmpty()
+    .withMessage("Job ID is required")
+    .isUUID()
+    .withMessage("Job ID must be a valid UUID"),
+
+  param("queue")
+    .notEmpty()
+    .withMessage("Queue name is required")
+    .isIn(["mailQueue", "aiQueue", "imageQueue"])
+    .withMessage("Queue name must be one of: mailQueue, aiQueue, imageQueue"),
+  validate,
+];
+
+export const retryJobByQueueAndIdValidator = [
   param("id")
     .notEmpty()
     .withMessage("Job ID is required")

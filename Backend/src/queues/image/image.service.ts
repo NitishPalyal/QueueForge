@@ -175,6 +175,7 @@ export async function addJobInImageQueueService({
   uploadedImageKey,
   batchId,
   isLastStep,
+  priority,
 }: addJobInImageQueueServiceParam) {
   try {
     imageQueue.add(
@@ -189,6 +190,7 @@ export async function addJobInImageQueueService({
         jobId,
         backoff: { type: "exponential", delay: 3000 },
         attempts: 3,
+        ...(priority !== undefined ? { priority } : {}),
       },
     );
   } catch (error) {

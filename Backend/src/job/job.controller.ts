@@ -7,6 +7,8 @@ import { FolderName, isMimeType } from "../queues/image/image.types.ts";
 import { ImageJobPayloadSchema } from "../shared/zod.schema.ts";
 import {
   QUEUES,
+  DEFAULT_JOB_PRIORITY,
+  normalizeJobPriority,
   type CreateAiResponseJobControllerBody,
   type CreateEmailJobControllerBody,
   type getAllJobsControllerQuerys,
@@ -26,6 +28,7 @@ import {
   getAllStatusJobsService,
   getImageJobUploadedAndProcessedImageUrlService,
   getJobService,
+  retryJobService,
 } from "./job.service.ts";
 
 export async function createEmailJobController(
@@ -33,16 +36,21 @@ export async function createEmailJobController(
   res: Response<APIResponse>,
 ) {
   try {
-    const { to, prompt, idempotency_key } = req.body;
+    const { to, prompt, idempotency_key, priority } = req.body;
 
-    if (!to || !prompt || !idempotency_key) {
+    if (!to || !prompt || !idempotency_key || priority === undefined) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields in request body.",
       });
     }
 
-    const job = await createMailJobService({ to, prompt, idempotency_key });
+    const job = await createMailJobService({
+      to,
+      prompt,
+      idempotency_key,
+      priority,
+    });
 
     if (!job) {
       return res.status(401).json({
@@ -57,6 +65,7 @@ export async function createEmailJobController(
       payload: { to, prompt },
       ...(job.batchId ? { batchId: job.batchId } : {}),
       isLastStep: false,
+      priority,
     });
 
     res.status(202).json({
@@ -78,15 +87,19 @@ export async function createAiResponseJobController(
   res: Response<APIResponse>,
 ) {
   try {
-    const { prompt, idempotency_key } = req.body;
-    if (!prompt || !idempotency_key) {
+    const { prompt, idempotency_key, priority } = req.body;
+    if (!prompt || !idempotency_key || priority === undefined) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields in request body.",
       });
     }
 
-    const job = await createAiResponseJobService({ prompt, idempotency_key });
+    const job = await createAiResponseJobService({
+      prompt,
+      idempotency_key,
+      priority,
+    });
 
     if (!job) {
       return res.status(500).json({
@@ -101,6 +114,7 @@ export async function createAiResponseJobController(
       payload: { prompt },
       ...(job.batchId ? { batchId: job.batchId } : {}),
       isLastStep: false,
+      priority,
     });
 
     res.status(202).json({
@@ -127,6 +141,8 @@ export async function createImageProcessingJobController(
 ) {
   try {
     const idempotency_key = req.get("idempotency_key");
+    const priorityRaw = req.get("priority");
+    const parsedPriority = priorityRaw ? Number(priorityRaw) : undefined;
 
     if (!idempotency_key) {
       return res.status(400).json({
@@ -134,6 +150,20 @@ export async function createImageProcessingJobController(
         message: "Idempotency_key is required",
       });
     }
+
+    if (
+      parsedPriority === undefined ||
+      !Number.isInteger(parsedPriority) ||
+      parsedPriority < 1 ||
+      parsedPriority > 10
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Priority header must be an integer between 1 and 10.",
+      });
+    }
+
+    const priority = normalizeJobPriority(parsedPriority);
 
     const file = req.file;
 
@@ -160,6 +190,7 @@ export async function createImageProcessingJobController(
     const job = await createImageProcessingJobService({
       uploadedImageKey,
       idempotency_key,
+      priority,
     });
 
     if (!job) {
@@ -174,6 +205,7 @@ export async function createImageProcessingJobController(
       uploadedImageKey,
       ...(job.batchId ? { batchId: job.batchId } : {}),
       isLastStep: false,
+      priority,
     });
 
     res.status(202).json({
@@ -232,6 +264,43 @@ export async function getAllJobsController(
     return res.status(500).json({
       success: false,
       message: "Failed to fetch all jobs.",
+    });
+  }
+}
+
+export async function retryJobByQueueAndIdController(
+  req: Request<{ queue: string; id: string }, {}, {}, {}>,
+  res: Response<APIResponse>,
+) {
+  try {
+    const { id, queue } = req.params;
+
+    if (!id || !queue) {
+      return res.status(400).json({
+        success: false,
+        message: "Job id and queue name are required.",
+      });
+    }
+
+    const retriedJob = await retryJobService({
+      jobId: id,
+      queueName: queue,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Job retried successfully.",
+      data: { job: retriedJob },
+    });
+  } catch (error) {
+    logger.error(
+      "Error in retryJobByQueueAndIdController",
+      "job.controller",
+      error,
+    );
+    return res.status(500).json({
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to retry job.",
     });
   }
 }

@@ -1,4 +1,5 @@
 import { Prisma } from "../../../generated/prisma/client.ts";
+import type { JobPriority } from "../../job/job.types.ts";
 export type SendmailOptions = {
   to: string;
   subject: string;
@@ -17,4 +18,5 @@ export interface MailQueuePayload {
   payload: MailJobPayload;
   batchId?: string;
   isLastStep: boolean;
+  priority?: JobPriority;
 }

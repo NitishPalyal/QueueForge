@@ -1,4 +1,5 @@
 import type { Prisma } from "../../../generated/prisma/client.ts";
+import type { JobPriority } from "../../job/job.types.ts";
 
 export interface imageProcessingService {
   jobId: string;
@@ -45,4 +46,5 @@ export interface addJobInImageQueueServiceParam {
   uploadedImageKey: string;
   batchId?: string;
   isLastStep: boolean;
+  priority?: JobPriority;
 }

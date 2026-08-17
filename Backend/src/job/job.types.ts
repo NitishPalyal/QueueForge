@@ -17,12 +17,31 @@ export const QUEUES: Record<string, Queue> = {
   mailQueue,
 };
 
+export const VALID_JOB_PRIORITIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+export type JobPriority = (typeof VALID_JOB_PRIORITIES)[number];
+export const DEFAULT_JOB_PRIORITY: JobPriority = 5;
+
+export function normalizeJobPriority(
+  value: number | undefined,
+  fallback: JobPriority = DEFAULT_JOB_PRIORITY,
+): JobPriority {
+  if (
+    typeof value === "number" &&
+    VALID_JOB_PRIORITIES.includes(value as JobPriority)
+  ) {
+    return value as JobPriority;
+  }
+
+  return fallback;
+}
+
 /**
  * Request body for creating an AI response job from the controller layer.
  */
 export interface CreateAiResponseJobControllerBody {
   prompt: string;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -31,6 +50,7 @@ export interface CreateAiResponseJobControllerBody {
 export interface CreateAiResponseJobServiceParams {
   prompt: string;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -48,6 +68,7 @@ export interface CreateAiResponseJobRepositoryInput {
   queue_name: string;
   payload: CreateAiResponseJobPayload;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -57,6 +78,7 @@ export interface CreateEmailJobControllerBody {
   to: string;
   prompt: string;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -66,6 +88,7 @@ export interface CreateMailJobServiceParams {
   to: string;
   prompt: string;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -86,6 +109,7 @@ export interface CreateMailJobRepositoryInput {
   queue_name: string;
   payload: CreateMailJobPayload;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -93,6 +117,7 @@ export interface CreateMailJobRepositoryInput {
  */
 export interface CreateImageProcessingJobControllerBody {
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -101,6 +126,7 @@ export interface CreateImageProcessingJobControllerBody {
 export interface CreateImageProcessingJobServiceParams {
   uploadedImageKey: string;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 /**
@@ -119,6 +145,7 @@ export interface CreateImageProcessingJobRepositoryInput {
   queue_name: string;
   payload: CreateImageProcessingJobPayload;
   idempotency_key: string;
+  priority: JobPriority;
 }
 
 export enum JobType {
@@ -162,6 +189,14 @@ export interface DeleteImageJobUploadedAndProcessedImageServiceParams {
  * Parameters for removing a job from a queue.
  */
 export interface RemoveJobServiceParams {
+  jobId: string;
+  queueName: string;
+}
+
+/**
+ * Parameters for retrying a failed or pending job.
+ */
+export interface RetryJobServiceParams {
   jobId: string;
   queueName: string;
 }
