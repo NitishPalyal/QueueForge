@@ -8,10 +8,30 @@ import { Status } from "../../generated/prisma/client.ts";
 import type { JobCreateInput } from "../../generated/prisma/models.ts";
 // Prisma namespace gives you auto-generated input types like UserCreateInput
 
-export async function findAll() {
-  return await prisma.job.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+export async function findAll(limit: number, skip: number) {
+  const [jobs, totalJobs] = await Promise.all([
+    prisma.job.findMany({
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        type: true,
+        queueName: true,
+        status: true,
+        priority: true,
+        attempts: true,
+        createdAt: true,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+
+    prisma.job.count(),
+  ]);
+
+  return { jobs, totalJobs };
 }
 
 export async function findById(id: string) {

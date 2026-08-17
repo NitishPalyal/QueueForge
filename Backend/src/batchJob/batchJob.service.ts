@@ -11,6 +11,7 @@ import {
   type buildFlowTreeServiceParam,
   type createBatchParam,
   type finishStepParam,
+  type getAllBatchesServiceParams,
   type JobRow,
   type toFlowJobParam,
 } from "./batchJob.types.ts";
@@ -200,10 +201,19 @@ export async function getBatchService(batchId: string): Promise<boolean> {
   }
 }
 
-export async function getAllBatchesService() {
+export async function getAllBatchesService({
+  limit,
+  page,
+}: getAllBatchesServiceParams) {
   try {
-    const batches = await BatchJobRepo.findAll();
-    return batches;
+    const skip = (page - 1) * limit;
+    const { batches, totalBatches } = await BatchJobRepo.findAll(limit, skip);
+    const totalPages = Math.ceil(totalBatches / limit);
+
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+
+    return { batches, totalBatches, hasNextPage, hasPreviousPage };
   } catch (error) {
     logger.error("Error in getAllBatchesService", "batchJob.service", error);
     throw error;

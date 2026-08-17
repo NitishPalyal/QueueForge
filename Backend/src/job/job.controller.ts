@@ -9,6 +9,7 @@ import {
   QUEUES,
   type CreateAiResponseJobControllerBody,
   type CreateEmailJobControllerBody,
+  type getAllJobsControllerQuerys,
 } from "./job.types.ts";
 import {
   addJobInImageQueueService,
@@ -194,11 +195,18 @@ export async function createImageProcessingJobController(
 }
 
 export async function getAllJobsController(
-  req: Request<{}, {}, {}, {}>,
+  req: Request<{}, {}, {}, getAllJobsControllerQuerys>,
   res: Response<APIResponse>,
 ) {
   try {
-    const jobs = await getAllJobsService();
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 50);
+
+    const { jobs, totalJobs, hasNextPage, hasPreviousPage } =
+      await getAllJobsService({
+        limit,
+        page,
+      });
 
     if (!jobs) {
       return res.status(404).json({
@@ -210,7 +218,14 @@ export async function getAllJobsController(
     res.status(200).json({
       success: true,
       message: "All Jobs Fecthed Successfully.",
-      data: { totalJobs: jobs.length, jobs },
+      data: {
+        limit: Number(limit),
+        page: Number(page),
+        totalJobs,
+        jobs,
+        hasNextPage,
+        hasPreviousPage,
+      },
     });
   } catch (error) {
     logger.error("Error in getAllJobsController", "job.controller", error);

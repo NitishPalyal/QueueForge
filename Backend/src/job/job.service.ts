@@ -21,6 +21,7 @@ import {
   type GetImageJobUploadedAndProcessedImageUrlServiceParams,
   type DeleteImageJobUploadedAndProcessedImageServiceParams,
   type DeleteJobServiceParams,
+  type getAllJobsServiceParams,
 } from "./job.types.ts";
 
 export async function createMailJobService({
@@ -115,10 +116,18 @@ export async function getJobService(id: string): Promise<Job> {
   }
 }
 
-export async function getAllJobsService() {
+export async function getAllJobsService({
+  limit,
+  page,
+}: getAllJobsServiceParams) {
   try {
-    const jobs = await jobRepo.findAll();
-    return jobs;
+    const skip = (page - 1) * limit;
+    const { jobs, totalJobs } = await jobRepo.findAll(limit, skip);
+    const totalPages = Math.ceil(totalJobs / limit);
+
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+    return { jobs, totalJobs, hasNextPage, hasPreviousPage };
   } catch (error) {
     logger.error("Error in getAllJobsService", "job.service", error);
     throw error;

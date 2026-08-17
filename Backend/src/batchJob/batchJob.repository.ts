@@ -3,10 +3,17 @@ import { Prisma } from "../../generated/prisma/client.ts";
 import { Status } from "../../generated/prisma/client.ts";
 import type { BatchCreateInput } from "../../generated/prisma/models.ts";
 
-export async function findAll() {
-  return await prisma.job.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+export async function findAll(limit: number, skip: number) {
+  const [batches, totalBatches] = await Promise.all([
+    prisma.batch.findMany({
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.batch.count(),
+  ]);
+
+  return { batches, totalBatches };
 }
 
 export async function findById(id: string) {

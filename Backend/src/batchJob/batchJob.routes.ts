@@ -19,7 +19,7 @@ const batchJobRouter = express.Router();
 
 // GET ALL BATCHES //
 batchJobRouter.get(
-  "/getAllBatches/",
+  "/getAllBatches",
   userAuthValidator,
   getAllBatchesController,
 );

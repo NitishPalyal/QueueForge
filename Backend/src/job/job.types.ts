@@ -3,6 +3,7 @@ import { Queue } from "bullmq";
 import { imageQueue } from "../queues/image/image.queue.ts";
 import { aiQueue } from "../queues/ai/ai.queue.ts";
 import { mailQueue } from "../queues/mail/mail.queue.ts";
+import { getAllJobsController } from "./job.controller.ts";
 
 /**
  * Registry of known queues used by the application.
@@ -132,6 +133,21 @@ export enum JobType {
 export interface GetImageJobUploadedAndProcessedImageUrlServiceParams {
   uploadedImageKey: string;
   processedImageKey: string;
+}
+
+/**
+ * Querys for retrieving limited no of jobs from database.
+ */
+export interface getAllJobsControllerQuerys {
+  page?: string | undefined;
+  limit?: string | undefined;
+}
+/**
+ * Params for retrieving limited no of jobs from database.
+ */
+export interface getAllJobsServiceParams {
+  page: number;
+  limit: number;
 }
 
 /**

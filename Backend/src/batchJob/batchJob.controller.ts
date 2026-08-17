@@ -3,7 +3,10 @@ import type { APIResponse } from "../shared/types.ts";
 import { logger } from "../shared/logger.ts";
 import { FolderName, isMimeType } from "../queues/image/image.types.ts";
 import { uploadToStorageService } from "../queues/image/image.service.ts";
-import type { createBatchControllerBody } from "./batchJob.types.ts";
+import type {
+  createBatchControllerBody,
+  getAllBatchesControllerQuerys,
+} from "./batchJob.types.ts";
 import { BatchRequestSchema } from "./batchJob.zodSchema.ts";
 import {
   createBatchService,
@@ -94,11 +97,15 @@ export async function createBatchJobController(
 }
 
 export async function getAllBatchesController(
-  req: Request<{}, {}, {}, {}>,
+  req: Request<{}, {}, {}, getAllBatchesControllerQuerys>,
   res: Response<APIResponse>,
 ) {
   try {
-    const batches = await getAllBatchesService();
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 50);
+
+    const { batches, totalBatches, hasNextPage, hasPreviousPage } =
+      await getAllBatchesService({ page, limit });
 
     if (!batches || batches.length === 0) {
       return res.status(404).json({
@@ -109,7 +116,14 @@ export async function getAllBatchesController(
     return res.status(200).json({
       success: true,
       message: "Batches retrieved successfully.",
-      data: { batches },
+      data: {
+        batches,
+        totalBatches,
+        hasNextPage,
+        hasPreviousPage,
+        page,
+        limit,
+      },
     });
   } catch (error) {
     logger.error(

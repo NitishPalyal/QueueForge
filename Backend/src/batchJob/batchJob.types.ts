@@ -45,3 +45,13 @@ export interface finishStepParam {
 export interface createBatchControllerBody {
   steps: Step[];
 }
+
+export interface getAllBatchesControllerQuerys {
+  page?: string | undefined;
+  limit?: string | undefined;
+}
+
+export interface getAllBatchesServiceParams {
+  page: number;
+  limit: number;
+}
