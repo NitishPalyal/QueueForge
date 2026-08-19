@@ -24,15 +24,6 @@ httpServer.listen(PORT, () => {
 });
 
 // Graceful shutdown
-// process.on("SIGINT", async () => {
-//   await prisma.$disconnect();
-
-//   httpServer.close(() => {
-//     console.log("Server closed, DB disconnected");
-//     process.exit(0);
-//   });
-// });
-
 async function gracefulShutdown() {
   await prisma.$disconnect();
   httpServer.close(() => {
