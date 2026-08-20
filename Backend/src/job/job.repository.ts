@@ -2,7 +2,7 @@
 // Think of it as the ONLY place that knows about Prisma/the database.
 // Services call repositories. Repositories call Prisma.
 
-import { prisma } from "../config/database.ts";
+import { prisma } from "../config/config.database.ts";
 import { Prisma } from "../../generated/prisma/client.ts";
 import { Status } from "../../generated/prisma/client.ts";
 import type { JobCreateInput } from "../../generated/prisma/models.ts";

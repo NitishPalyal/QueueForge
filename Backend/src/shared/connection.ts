@@ -1,4 +1,4 @@
-import configKeys from "../config/config.ts";
+import configKeys from "../config/config.keys.ts";
 
 export const connection = {
   host: configKeys.REDIS_HOST,

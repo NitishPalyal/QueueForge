@@ -1,9 +1,9 @@
 import app from "./src/app.ts";
 import http from "http";
-import { prisma } from "./src/config/database.ts";
+import { prisma } from "./src/config/config.database.ts";
 import { startNotificationSubscriber } from "./src/notification/notification.server.ts";
 import { initializeSocket } from "./src/sockets/sockets.server.ts";
-import configKeys from "./src/config/config.ts";
+import configKeys from "./src/config/config.keys.ts";
 import "./src/queues/ai/ai.events.ts";
 import "./src/queues/mail/mail.events.ts";
 import "./src/queues/image/image.events.ts";

@@ -1,4 +1,4 @@
-import { prisma } from "../config/database.ts";
+import { prisma } from "../config/config.database.ts";
 import type { UserCreateInput } from "../../generated/prisma/models.ts";
 
 export async function findById(id: string) {

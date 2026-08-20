@@ -7,11 +7,13 @@ import {
   registerController,
 } from "./auth.controller.ts";
 import { loginValidator, registerValidator } from "./auth.validator.ts";
+import { getMeRateLimiter, loginRateLimiter } from "./auth.rateLimiters.ts";
+
 const authRouter = express.Router();
 
 authRouter.post("/register", registerValidator, registerController);
-authRouter.post("/login", loginValidator, loginController);
-authRouter.get("/get-me", userAuthValidator, getMeController);
+authRouter.post("/login", loginRateLimiter, loginValidator, loginController);
+authRouter.get("/get-me", getMeRateLimiter, userAuthValidator, getMeController);
 authRouter.delete("/deleteUser", userAuthValidator, deleteUserController);
 
 export default authRouter;

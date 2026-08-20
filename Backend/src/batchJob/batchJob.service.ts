@@ -97,16 +97,19 @@ export async function createBatchService({
           ? await createImageProcessingJobService({
               idempotency_key: idempotencyKey,
               uploadedImageKey: step!.data.uploadedImageKey,
+              priority: 5,
             })
           : step!.type === "mail"
             ? await createMailJobService({
                 idempotency_key: idempotencyKey,
                 prompt: step!.data.prompt,
                 to: step!.data.to,
+                priority: 5,
               })
             : await createAiResponseJobService({
                 idempotency_key: idempotencyKey,
                 prompt: step!.data.prompt,
+                priority: 5,
               });
 
       await JobRepo.setBatchIdAndStepOrder(job.id, batch.id, i);

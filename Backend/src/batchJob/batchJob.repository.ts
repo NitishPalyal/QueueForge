@@ -1,4 +1,4 @@
-import { prisma } from "../config/database.ts";
+import { prisma } from "../config/config.database.ts";
 import { Prisma } from "../../generated/prisma/client.ts";
 import { Status } from "../../generated/prisma/client.ts";
 import type { BatchCreateInput } from "../../generated/prisma/models.ts";

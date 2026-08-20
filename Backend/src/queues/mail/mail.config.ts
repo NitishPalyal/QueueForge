@@ -1,7 +1,7 @@
 import type { SendmailOptions } from "./mail.types.ts";
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
-import configKeys from "../../config/config.ts";
+import configKeys from "../../config/config.keys.ts";
 import { logger } from "../../shared/logger.ts";
 
 const oauth2Client = new google.auth.OAuth2(

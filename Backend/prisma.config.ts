@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
-import configKeys from "./src/config/config.ts";
+import configKeys from "./src/config/config.keys.ts";
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
