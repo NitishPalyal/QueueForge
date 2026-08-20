@@ -26,11 +26,16 @@ import {
   getJobStatusByIdValidator,
   retryJobByQueueAndIdValidator,
 } from "./job.validator.ts";
+import {
+  expensiveRateLimiter,
+  generalRateLimiter,
+} from "./job.rateLimiters.ts";
 
 const jobRouter = Router();
 // CREATE MAIL JOB //
 jobRouter.post(
   "/sendMail",
+  expensiveRateLimiter,
   userAuthValidator,
   createEmailJobValidator,
   createEmailJobController,
@@ -39,6 +44,7 @@ jobRouter.post(
 // CREATE AI RESPONSE JOB //
 jobRouter.post(
   "/aiReponse",
+  expensiveRateLimiter,
   userAuthValidator,
   createAiResponseJobValidator,
   createAiResponseJobController,
@@ -47,6 +53,7 @@ jobRouter.post(
 // CREATE IMAGE PROCESSING JOB //
 jobRouter.post(
   "/imageProcessing",
+  expensiveRateLimiter,
   userAuthValidator,
   createImageProcessingJobValidator,
   upload.single("image"),
@@ -54,12 +61,18 @@ jobRouter.post(
 );
 
 // GET ALL JOBS //
-jobRouter.get("/getAllJobs", userAuthValidator, getAllJobsController);
+jobRouter.get(
+  "/getAllJobs",
+  userAuthValidator,
+  generalRateLimiter,
+  getAllJobsController,
+);
 
 // GET JOB/:ID //
 jobRouter.get(
   "/getJob/:id",
   userAuthValidator,
+  generalRateLimiter,
   getJobByIdValidator,
   getJobByIdController,
 );
@@ -68,16 +81,9 @@ jobRouter.get(
 jobRouter.delete(
   "/deleteJob/:queue/:id",
   userAuthValidator,
+  generalRateLimiter,
   deleteJobByQueueAndIdValidator,
   deleteJobByQueueAndIdController,
-);
-
-// RETRY JOB /:QUEUE/:ID //
-jobRouter.post(
-  "/retryJob/:queue/:id",
-  userAuthValidator,
-  retryJobByQueueAndIdValidator,
-  retryJobByQueueAndIdController,
 );
 
 // GET JOB STATUS/:ID //
@@ -92,6 +98,7 @@ jobRouter.get(
 jobRouter.get(
   "/getAll/:queue/Jobs",
   userAuthValidator,
+  generalRateLimiter,
   getAllJobsByQueueValidator,
   getAllJobsByQueueController,
 );
@@ -100,6 +107,7 @@ jobRouter.get(
 jobRouter.get(
   "/getAll/:status/Statusjobs",
   userAuthValidator,
+  generalRateLimiter,
   getAllJobsByStatusValidator,
   getAllJobsByStatusController,
 );
@@ -108,6 +116,7 @@ jobRouter.get(
 jobRouter.get(
   "/getAll/:queue/:status/jobs",
   userAuthValidator,
+  generalRateLimiter,
   getAllJobsByQueueAndStatusValidator,
   getAllJobsByQueueAndStatusController,
 );
@@ -115,6 +124,7 @@ jobRouter.get(
 //RETRY JOB /:QUEUE/:ID//
 jobRouter.get(
   "/retryJob/:id/:queue",
+  expensiveRateLimiter,
   userAuthValidator,
   retryJobByQueueAndIdValidator,
   retryJobByQueueAndIdController,
