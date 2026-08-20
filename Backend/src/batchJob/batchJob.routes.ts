@@ -16,6 +16,10 @@ import {
   getBatchJobsByIdController,
   uploadImageController,
 } from "./batchJob.controller.ts";
+import {
+  dbOperationRateLimiter,
+  jobCreationRateLimiter,
+} from "../job/job.rateLimiters.ts";
 
 const batchJobRouter = express.Router();
 
@@ -23,6 +27,7 @@ const batchJobRouter = express.Router();
 batchJobRouter.get(
   "/getAllBatches",
   userAuthValidator,
+  dbOperationRateLimiter,
   getAllBatchesController,
 );
 
@@ -30,6 +35,7 @@ batchJobRouter.get(
 batchJobRouter.get(
   "/getBatchJobs/:id",
   userAuthValidator,
+  dbOperationRateLimiter,
   getBatchJobsByIdValidator,
   getBatchJobsByIdController,
 );
@@ -38,6 +44,7 @@ batchJobRouter.get(
 batchJobRouter.post(
   "/createBatchJob/",
   userAuthValidator,
+  jobCreationRateLimiter,
   createBatchJobValidator,
   createBatchJobController,
 );
@@ -63,6 +70,7 @@ batchJobRouter.post(
 batchJobRouter.delete(
   "/deleteBatch/:id",
   userAuthValidator,
+  dbOperationRateLimiter,
   deleteBatchByIdValidator,
   deleteBatchByIdController,
 );
