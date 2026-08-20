@@ -41,6 +41,16 @@ export const uploadImageValidator = [
   validate,
 ];
 
+export const deleteImageValidator = [
+  body("uploadedImageKey")
+    .notEmpty()
+    .withMessage("uploaded Image Key is required")
+    .isString()
+    .withMessage("Please provide a valid uploaded Image Key string"),
+
+  validate,
+];
+
 export const createBatchJobValidator = [
   body("steps")
     .isArray({ min: 2, max: 3 })

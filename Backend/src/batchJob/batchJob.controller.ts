@@ -2,9 +2,14 @@ import type { Request, Response } from "express";
 import type { APIResponse } from "../shared/types.ts";
 import { logger } from "../shared/logger.ts";
 import { FolderName, isMimeType } from "../queues/image/image.types.ts";
-import { uploadToStorageService } from "../queues/image/image.service.ts";
+import {
+  deleteFromStorageService,
+  getImageUrlFromStorageService,
+  uploadToStorageService,
+} from "../queues/image/image.service.ts";
 import type {
   createBatchControllerBody,
+  deleteImageControllerBody,
   getAllBatchesControllerQuerys,
 } from "./batchJob.types.ts";
 import { BatchRequestSchema } from "./batchJob.zodSchema.ts";
@@ -43,10 +48,13 @@ export async function uploadImageController(
       folderName: FolderName.uploaded,
     });
 
+    const uploadedImageUrl =
+      await getImageUrlFromStorageService(uploadedImageKey);
+
     res.status(202).json({
       success: true,
       message: "Image uploaded successfully.",
-      data: { uploadedImageKey },
+      data: { key: uploadedImageKey, url: uploadedImageUrl },
     });
   } catch (error) {
     logger.error(
@@ -57,6 +65,37 @@ export async function uploadImageController(
     return res.status(500).json({
       success: false,
       message: "Failed to upload image.",
+    });
+  }
+}
+export async function deleteImageController(
+  req: Request<{}, {}, deleteImageControllerBody, {}>,
+  res: Response<APIResponse>,
+) {
+  try {
+    const { uploadedImageKey } = req.body;
+
+    if (!uploadedImageKey) {
+      return res.status(404).json({
+        success: false,
+        message: "uploadedImageKey not found.",
+      });
+    }
+
+    await deleteFromStorageService(uploadedImageKey);
+    res.status(202).json({
+      success: true,
+      message: "Image deleted from storage successfully.",
+    });
+  } catch (error) {
+    logger.error(
+      "Error in deleteImageController",
+      "batchJob.controller",
+      error,
+    );
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete image from storage.",
     });
   }
 }

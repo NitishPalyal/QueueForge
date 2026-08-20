@@ -55,3 +55,7 @@ export interface getAllBatchesServiceParams {
   page: number;
   limit: number;
 }
+
+export interface deleteImageControllerBody {
+  uploadedImageKey: string;
+}

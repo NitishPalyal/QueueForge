@@ -2,7 +2,7 @@ import { rateLimit } from "express-rate-limit";
 import { RedisStore } from "rate-limit-redis";
 import { redis } from "../config/config.redis.ts";
 
-export const generalRateLimiter = rateLimit({
+export const dbOperationRateLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: 100,
 
@@ -19,7 +19,8 @@ export const generalRateLimiter = rateLimit({
     message: "Too many requests. Please try again later.",
   },
 });
-export const expensiveRateLimiter = rateLimit({
+
+export const jobCreationRateLimiter = rateLimit({
   windowMs: 60 * 1000,
   limit: 5,
 
