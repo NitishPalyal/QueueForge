@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import type { APIResponse } from "../shared/types.ts";
 import { logger } from "../shared/logger.ts";
 import { FolderName, isMimeType } from "../queues/image/image.types.ts";
+import { BatchRequestSchema } from "./batchJob.zodSchema.ts";
 import {
   deleteFromStorageService,
   getImageUrlFromStorageService,
@@ -12,7 +13,6 @@ import type {
   deleteImageControllerBody,
   getAllBatchesControllerQuerys,
 } from "./batchJob.types.ts";
-import { BatchRequestSchema } from "./batchJob.zodSchema.ts";
 import {
   createBatchService,
   deleteBatchService,
@@ -68,6 +68,7 @@ export async function uploadImageController(
     });
   }
 }
+
 export async function deleteImageController(
   req: Request<{}, {}, deleteImageControllerBody, {}>,
   res: Response<APIResponse>,
