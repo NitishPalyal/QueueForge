@@ -7,6 +7,7 @@
     "dev": "tsx watch --env-file=.env server.ts",
     "worker": "tsx watch --env-file=.env src/queues/worker.ts",
     "build": "tsc",
+    "test": "vitest run",
     "start": "node --env-file=.env dist/server.js",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
@@ -61,6 +62,7 @@
     "prisma": "^7.8.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
   }
 }
