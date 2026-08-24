@@ -24,3 +24,9 @@ export interface findUserByEmailAndFullnameServiceParam {
   email: string;
   fullname: string;
 }
+
+export interface createUserServiceParams {
+  fullname: string;
+  password: string;
+  email: string;
+}
