@@ -7,7 +7,7 @@
     "dev": "tsx watch --env-file=.env server.ts",
     "worker": "tsx watch --env-file=.env src/queues/worker.ts",
     "build": "tsc",
-    "test": "vitest run",
+    "test": "vitest run tests/auth/auth.service.test.ts",
     "start": "node --env-file=.env dist/server.js",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",

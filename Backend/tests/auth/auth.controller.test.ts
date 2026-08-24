@@ -30,7 +30,7 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-// GET ME  CONTROLLER TEST//
+// GET ME CONTROLLER TEST//
 describe("getMe controller", () => {
   // TEST FOR RETURING USER //
   it("should return the current user", async () => {

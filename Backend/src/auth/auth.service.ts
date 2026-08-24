@@ -10,6 +10,7 @@ import type {
 } from "./auth.types.ts";
 import type { APIResponse } from "../shared/types.ts";
 import type { Response } from "express";
+import configKeys from "../config/config.keys.ts";
 
 export async function sendTokenResponse(
   user: User,
@@ -17,7 +18,7 @@ export async function sendTokenResponse(
   message: string,
 ) {
   try {
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ id: user.id }, configKeys.JWT_SECRET, {
       expiresIn: "7d",
     });
 
