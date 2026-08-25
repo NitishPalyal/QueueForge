@@ -1,13 +1,8 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import argon2 from "argon2";
 import {
-  getUserByEmail,
   comparePasswordService,
-  sendTokenResponse,
-  createUserService,
-  findUserByEmailAndFullnameService,
   hashPasswordService,
-  deleteUserById,
 } from "../../src/auth/auth.service.ts";
 
 afterEach(() => {

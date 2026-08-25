@@ -7,7 +7,7 @@
     "dev": "tsx watch --env-file=.env server.ts",
     "worker": "tsx watch --env-file=.env src/queues/worker.ts",
     "build": "tsc",
-    "test:auth": "vitest run tests/auth",
+    "test:auth": "vitest run tests/auth/auth.repository.test.ts",
     "test:job": "vitest run tests/job",
     "test:batch": "vitest run tests/batch",
     "test:image": "vitest run tests/image",
