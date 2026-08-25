@@ -5,6 +5,7 @@ import morgan from "morgan";
 import authRouter from "./auth/auth.routes.ts";
 import batchJobRouter from "./batchJob/batchJob.routes.ts";
 import jobRouter from "./job/job.routes.ts";
+import benchmarkRouter from "./benchmark/benchmark.routes.ts";
 
 const app = express();
 
@@ -35,5 +36,6 @@ app.get("/health", (req, res) => res.json({ status: "ok" }));
 app.use("/api/auth/", authRouter);
 app.use("/api/job/", jobRouter);
 app.use("/api/batchJob/", batchJobRouter);
+app.use("/api/benchmark/", benchmarkRouter);
 
 export default app;

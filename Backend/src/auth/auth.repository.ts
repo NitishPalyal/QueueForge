@@ -12,6 +12,7 @@ export async function findByEmail(email: string) {
     where: { email },
   });
 }
+
 export async function findByEmailAndFullname(email: string, fullname: string) {
   return await prisma.user.findFirst({
     where: { OR: [{ email }, { fullname }] },
@@ -23,6 +24,7 @@ export async function createUser(data: UserCreateInput) {
     data,
   });
 }
+
 export async function deleteUser(id: string) {
   await prisma.user.delete({
     where: { id },
