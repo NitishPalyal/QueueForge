@@ -11,8 +11,13 @@ import {
   createAiResponseJobValidator,
   createImageProcessingJobValidator,
 } from "../job/job.validator.ts";
-import { getBenchmarkController } from "./benchmark.controller.ts";
+import {
+  getBatchJobBenchmarkController,
+  getJobBenchmarkController,
+} from "./benchmark.controller.ts";
 import { getBenchmarkControllerValidator } from "./benchmark.validator.ts";
+import { createBatchJobValidator } from "../batchJob/batchJob.validator.ts";
+import { createBatchJobController } from "../batchJob/batchJob.controller.ts";
 
 // Same controllers, same validators, same behavior as src/job/job.routes.ts —
 // the ONLY difference is jobCreationRateLimiter is not in this chain.
@@ -20,10 +25,10 @@ import { getBenchmarkControllerValidator } from "./benchmark.validator.ts";
 const benchmarkRouter = express.Router();
 
 benchmarkRouter.post(
-  "/getBenchmark/:jobType",
+  "/getJobBenchmark/:jobType",
   userAuthValidator,
   getBenchmarkControllerValidator,
-  getBenchmarkController,
+  getJobBenchmarkController,
 );
 
 benchmarkRouter.post(
@@ -46,6 +51,19 @@ benchmarkRouter.post(
   createImageProcessingJobValidator,
   upload.single("image"),
   createImageProcessingJobController,
+);
+
+benchmarkRouter.post(
+  "/getBatchJobBenchmark",
+  userAuthValidator,
+  getBatchJobBenchmarkController,
+);
+
+benchmarkRouter.post(
+  "/createBatchJob",
+  userAuthValidator,
+  createBatchJobValidator,
+  createBatchJobController,
 );
 
 export default benchmarkRouter;

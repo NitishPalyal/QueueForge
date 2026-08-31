@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
-import { runBenchmark } from "./benchmark.service.ts";
+import { runBatchBenchmark, runBenchmark } from "./benchmark.service.ts";
 import { logger } from "../shared/logger.ts";
 import type { APIResponse } from "../shared/types.ts";
 
-export async function getBenchmarkController(
+export async function getJobBenchmarkController(
   req: Request<{ jobType: string }, {}, {}, {}>,
   res: Response<APIResponse>,
 ): Promise<Response> {
@@ -35,5 +35,22 @@ export async function getBenchmarkController(
     return res
       .status(500)
       .json({ success: false, message: "Benchmark failed." });
+  }
+}
+
+export async function getBatchJobBenchmarkController(
+  req: Request,
+  res: Response,
+): Promise<Response> {
+  const cookie = req.headers.cookie!;
+
+  try {
+    const result = await runBatchBenchmark(cookie);
+    return res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    logger.error("Batch benchmark failed", "benchmark-batch.controller", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Batch benchmark failed." });
   }
 }
