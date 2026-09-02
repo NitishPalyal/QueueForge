@@ -2,20 +2,19 @@ name: Backend CI
 
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: Backend
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -24,6 +23,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: Backend/package-lock.json
 
       - name: Install dependencies
         run: npm ci

@@ -1,7 +1,101 @@
 services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: queueforge-postgres
+    environment:
+      POSTGRES_DB: queueforge
+      POSTGRES_USER: queueforge
+      POSTGRES_PASSWORD: queueforge
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U queueforge -d queueforge"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   redis:
-    image: redis:8
+    image: redis:8-alpine
     container_name: queueforge-redis
     ports:
       - "6379:6379"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ./Backend
+    container_name: queueforge-backend
+    environment:
+      DATABASE_URL: postgresql://queueforge:queueforge@postgres:5432/queueforge
+      PORT: 3000
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GOOGLE_USER: ${GOOGLE_USER:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REFRESH_TOKEN: ${GOOGLE_REFRESH_TOKEN:-}
+      B2_BUCKET_NAME: ${B2_BUCKET_NAME:-}
+      B2_KEY_ID: ${B2_KEY_ID:-}
+      B2_APPLICATION_KEY: ${B2_APPLICATION_KEY:-}
+      B2_ENDPOINT: ${B2_ENDPOINT:-}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: ./Backend
+    container_name: queueforge-worker
+    command: ["npx", "tsx", "src/queues/worker.ts"]
+    environment:
+      DATABASE_URL: postgresql://queueforge:queueforge@postgres:5432/queueforge
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GOOGLE_USER: ${GOOGLE_USER:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      GOOGLE_REFRESH_TOKEN: ${GOOGLE_REFRESH_TOKEN:-}
+      B2_BUCKET_NAME: ${B2_BUCKET_NAME:-}
+      B2_KEY_ID: ${B2_KEY_ID:-}
+      B2_APPLICATION_KEY: ${B2_APPLICATION_KEY:-}
+      B2_ENDPOINT: ${B2_ENDPOINT:-}
+    depends_on:
+      backend:
+        condition: service_started
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+    container_name: queueforge-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
