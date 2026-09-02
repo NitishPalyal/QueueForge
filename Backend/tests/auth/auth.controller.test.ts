@@ -4,6 +4,7 @@ import {
   loginController,
   registerController,
   deleteUserController,
+  logoutController,
 } from "../../src/auth/auth.controller.ts";
 
 import {
@@ -338,6 +339,26 @@ describe("registerController", () => {
     expect(res.json).toHaveBeenCalledWith({
       message: "Internal server error",
       success: false,
+    });
+  });
+});
+
+describe("logoutController", () => {
+  it("should clear the auth cookie and sign the user out successfully", async () => {
+    const req = {} as any;
+    const res = {
+      clearCookie: vi.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    };
+
+    await logoutController(req, res as any);
+
+    expect(res.clearCookie).toHaveBeenCalledWith("token");
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      message: "User logged out successfully.",
+      success: true,
     });
   });
 });

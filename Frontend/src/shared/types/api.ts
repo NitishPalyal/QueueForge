@@ -1,9 +1,9 @@
 // Standard API Response Envelope
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
-  error?: any;
+  error?: unknown;
 }
 
 // Auth Types
@@ -18,9 +18,14 @@ export interface AuthResponseData {
 }
 
 // Job Status & Queue Types
-export type JobStatus = 'pending' | 'active' | 'failed' | 'completed' | 'delayed';
-export type QueueName = 'mailQueue' | 'aiQueue' | 'imageQueue';
-export type JobType = 'mail' | 'ai' | 'image';
+export type JobStatus =
+  | "pending"
+  | "active"
+  | "failed"
+  | "completed"
+  | "delayed";
+export type QueueName = "mailQueue" | "aiQueue" | "imageQueue";
+export type JobType = "mail" | "ai" | "image";
 
 // Job Summary returned by /getAllJobs and list views
 export interface JobSummary {
@@ -39,7 +44,16 @@ export interface FullJobRecord {
   id: string;
   type: string;
   queue_name: string;
-  payload: Record<string, any>;
+  payload: Record<
+    string,
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | Record<string, unknown>
+    | unknown[]
+  >;
   status: JobStatus;
   priority: number;
   attempts: number;
@@ -97,7 +111,7 @@ export interface BatchDetailData {
 
 // Benchmark Types
 export interface JobBenchmarkResult {
-  jobType: 'email' | 'ai' | 'image';
+  jobType: "email" | "ai" | "image";
   requestsSent: number;
   accepted: number;
   rejected: number;
@@ -111,7 +125,7 @@ export interface JobBenchmarkResult {
 }
 
 export interface BatchBenchmarkResult {
-  stepTypes: ('image' | 'mail' | 'ai')[];
+  stepTypes: ("image" | "mail" | "ai")[];
   requestsSent: number;
   accepted: number;
   rejected: number;

@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import styles from './JobForm.module.css';
 
 type JobType = 'email' | 'ai' | 'image';
+type EmailJobFormValues = z.infer<typeof emailJobSchema>;
+type AiJobFormValues = z.infer<typeof aiJobSchema>;
 
 // Validation Schemas
 const emailJobSchema = z.object({
@@ -56,7 +58,7 @@ export const SingleJobCreateForm: React.FC = () => {
   });
 
   // Handlers
-  const onEmailSubmit = async (data: any) => {
+  const onEmailSubmit = async (data: EmailJobFormValues) => {
     try {
       await createEmailMutation.mutateAsync({
         to: data.to,
@@ -68,7 +70,7 @@ export const SingleJobCreateForm: React.FC = () => {
     } catch {}
   };
 
-  const onAiSubmit = async (data: any) => {
+  const onAiSubmit = async (data: AiJobFormValues) => {
     try {
       await createAiMutation.mutateAsync({
         prompt: data.prompt,

@@ -19,6 +19,7 @@ interface InProgressStep {
 
 export const BatchCreateForm: React.FC = () => {
   const [steps, setSteps] = useState<InProgressStep[]>([]);
+  const [draggingStepId, setDraggingStepId] = useState<string | null>(null);
   const navigate = useNavigate();
   const createBatchMutation = useCreateBatchJob();
 
@@ -96,11 +97,18 @@ export const BatchCreateForm: React.FC = () => {
   // Step Data Updaters
   const updateMailData = (stepId: string, field: 'to' | 'prompt', val: string) => {
     setSteps((prev) =>
-      prev.map((s) =>
-        s.id === stepId
-          ? { ...s, mailData: { ...s.mailData, [field]: val } as any }
-          : s
-      )
+      prev.map((s) => {
+        if (s.id !== stepId || s.type !== 'mail') return s;
+
+        return {
+          ...s,
+          mailData: {
+            to: s.mailData?.to ?? '',
+            prompt: s.mailData?.prompt ?? '',
+            [field]: val,
+          },
+        };
+      })
     );
   };
 
@@ -247,7 +255,7 @@ export const BatchCreateForm: React.FC = () => {
                     <label className={styles.label}>Upload Batch Step Image</label>
                     <div
                       style={{
-                        border: '2px dashed var(--border-medium)',
+                        border: draggingStepId === step.id ? '2px dashed var(--primary)' : '2px dashed var(--border-medium)',
                         borderRadius: '8px',
                         padding: '1.5rem',
                         textAlign: 'center',
@@ -257,8 +265,23 @@ export const BatchCreateForm: React.FC = () => {
                         alignItems: 'center',
                         gap: '0.5rem',
                         color: 'var(--text-secondary)',
+                        background: draggingStepId === step.id ? 'rgba(249, 115, 22, 0.04)' : 'transparent',
+                        transition: 'all 0.2s ease',
                       }}
                       onClick={() => document.getElementById(`batchFile_${step.id}`)?.click()}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        setDraggingStepId(step.id);
+                      }}
+                      onDragLeave={() => setDraggingStepId((current) => (current === step.id ? null : current))}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        setDraggingStepId(null);
+                        const file = e.dataTransfer.files?.[0];
+                        if (file) {
+                          handleImageFileSelect(step.id, file);
+                        }
+                      }}
                     >
                       {step.isUploadingImage ? (
                         <Loader2 className="spinner" size={24} style={{ color: 'var(--primary)' }} />
@@ -266,7 +289,11 @@ export const BatchCreateForm: React.FC = () => {
                         <UploadCloud size={28} style={{ color: 'var(--primary)' }} />
                       )}
                       <span>
-                        {step.isUploadingImage ? 'Uploading image...' : 'Click to select image file'}
+                        {step.isUploadingImage
+                          ? 'Uploading image...'
+                          : draggingStepId === step.id
+                            ? 'Drop image here'
+                            : 'Click to select or drag & drop image file'}
                       </span>
                       <input
                         id={`batchFile_${step.id}`}

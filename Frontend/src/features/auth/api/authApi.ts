@@ -1,5 +1,9 @@
-import { apiClient } from '../../../shared/lib/axios';
-import type { APIResponse, AuthResponseData, User } from '../../../shared/types/api';
+import { apiClient } from "../../../shared/lib/axios";
+import type {
+  APIResponse,
+  AuthResponseData,
+  User,
+} from "../../../shared/types/api";
 
 export interface RegisterPayload {
   email: string;
@@ -14,30 +18,41 @@ export interface LoginPayload {
 
 export const authApi = {
   register: async (payload: RegisterPayload): Promise<User> => {
-    const response = await apiClient.post<APIResponse<AuthResponseData>>('/api/auth/register', payload);
+    const response = await apiClient.post<APIResponse<AuthResponseData>>(
+      "/api/auth/register",
+      payload,
+    );
     if (response.data.data?.user) {
       return response.data.data.user;
     }
-    throw new Error(response.data.message || 'Registration failed');
+    throw new Error(response.data.message || "Registration failed");
   },
 
   login: async (payload: LoginPayload): Promise<User> => {
-    const response = await apiClient.post<APIResponse<AuthResponseData>>('/api/auth/login', payload);
+    const response = await apiClient.post<APIResponse<AuthResponseData>>(
+      "/api/auth/login",
+      payload,
+    );
     if (response.data.data?.user) {
       return response.data.data.user;
     }
-    throw new Error(response.data.message || 'Login failed');
+    throw new Error(response.data.message || "Login failed");
   },
 
   getMe: async (): Promise<User> => {
-    const response = await apiClient.get<APIResponse<AuthResponseData>>('/api/auth/get-me');
+    const response =
+      await apiClient.get<APIResponse<AuthResponseData>>("/api/auth/get-me");
     if (response.data.data?.user) {
       return response.data.data.user;
     }
-    throw new Error(response.data.message || 'Failed to restore session');
+    throw new Error(response.data.message || "Failed to restore session");
+  },
+
+  logout: async (): Promise<void> => {
+    await apiClient.post<APIResponse>("/api/auth/logout");
   },
 
   deleteUser: async (): Promise<void> => {
-    await apiClient.delete<APIResponse>('/api/auth/deleteUser');
+    await apiClient.delete<APIResponse>("/api/auth/deleteUser");
   },
 };

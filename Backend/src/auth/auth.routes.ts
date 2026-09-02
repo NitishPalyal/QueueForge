@@ -4,6 +4,7 @@ import {
   deleteUserController,
   getMeController,
   loginController,
+  logoutController,
   registerController,
 } from "./auth.controller.ts";
 import { loginValidator, registerValidator } from "./auth.validator.ts";
@@ -13,6 +14,7 @@ const authRouter = express.Router();
 
 authRouter.post("/register", registerValidator, registerController);
 authRouter.post("/login", loginRateLimiter, loginValidator, loginController);
+authRouter.post("/logout", userAuthValidator, logoutController);
 authRouter.get("/get-me", getMeRateLimiter, userAuthValidator, getMeController);
 authRouter.delete("/deleteUser", userAuthValidator, deleteUserController);
 

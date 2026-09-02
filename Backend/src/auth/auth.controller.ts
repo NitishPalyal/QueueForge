@@ -119,6 +119,25 @@ export async function getMeController(
   }
 }
 
+export async function logoutController(
+  req: Request<{}, {}, {}, {}>,
+  res: Response<APIResponse>,
+) {
+  try {
+    res.clearCookie("token");
+
+    return res.status(200).json({
+      message: "User logged out successfully.",
+      success: true,
+    });
+  } catch (error) {
+    logger.error("Error in logoutController", "auth.controller", error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
+  }
+}
+
 export async function deleteUserController(
   req: Request<{}, {}, {}, {}>,
   res: Response<APIResponse>,

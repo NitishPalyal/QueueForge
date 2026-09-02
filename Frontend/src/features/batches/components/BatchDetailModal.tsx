@@ -12,6 +12,12 @@ interface BatchDetailModalProps {
   onClose: () => void;
 }
 
+const toText = (value: unknown): string => {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return '';
+};
+
 export const BatchDetailModal: React.FC<BatchDetailModalProps> = ({ batchId, isOpen, onClose }) => {
   const { data, isLoading, isError } = useBatchDetail(batchId);
   const deleteMutation = useDeleteBatch();
@@ -124,13 +130,13 @@ export const BatchDetailModal: React.FC<BatchDetailModalProps> = ({ batchId, isO
                 )}
 
                 {/* Render Step Output if Completed */}
-                {job.type === 'mail' && job.payload?.subject && (
+                {job.type === 'mail' && toText(job.payload?.subject) && (
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-                    <strong>Drafted Subject:</strong> {job.payload.subject}
+                    <strong>Drafted Subject:</strong> {toText(job.payload?.subject)}
                   </div>
                 )}
 
-                {job.type === 'ai' && job.payload?.response && (
+                {job.type === 'ai' && toText(job.payload?.response) && (
                   <div
                     style={{
                       fontSize: '0.85rem',
@@ -140,19 +146,20 @@ export const BatchDetailModal: React.FC<BatchDetailModalProps> = ({ batchId, isO
                       borderRadius: '6px',
                     }}
                   >
-                    {job.payload.response}
+                    {toText(job.payload?.response)}
                   </div>
                 )}
 
-                {(job as any).processedImageUrl && (
-                  <div>
-                    <img
-                      src={(job as any).processedImageUrl}
-                      alt="Processed Step Preview"
-                      style={{ maxHeight: '160px', borderRadius: '6px', objectFit: 'contain' }}
-                    />
-                  </div>
-                )}
+                {typeof (job as { processedImageUrl?: unknown }).processedImageUrl === 'string' &&
+                  (job as { processedImageUrl?: string }).processedImageUrl && (
+                    <div>
+                      <img
+                        src={(job as { processedImageUrl?: string }).processedImageUrl}
+                        alt="Processed Step Preview"
+                        style={{ maxHeight: '160px', borderRadius: '6px', objectFit: 'contain' }}
+                      />
+                    </div>
+                  )}
               </div>
             ))}
           </div>

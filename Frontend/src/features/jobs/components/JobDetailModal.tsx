@@ -14,6 +14,12 @@ interface JobDetailModalProps {
   onClose: () => void;
 }
 
+const toText = (value: unknown): string => {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return '';
+};
+
 export const JobDetailModal: React.FC<JobDetailModalProps> = ({ jobId, isOpen, onClose }) => {
   const { data, isLoading, isError, error } = useJobDetail(jobId);
   const retryMutation = useRetryJob();
@@ -145,19 +151,19 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ jobId, isOpen, o
               {job.type === 'mail' && (
                 <div>
                   <div style={{ marginBottom: '0.75rem' }}>
-                    <strong>Recipient: </strong> <span className={styles.mono}>{job.payload?.to}</span>
+                    <strong>Recipient: </strong> <span className={styles.mono}>{toText(job.payload?.to)}</span>
                   </div>
                   <div className={styles.promptBox}>
-                    <strong>Prompt: </strong> {job.payload?.prompt}
+                    <strong>Prompt: </strong> {toText(job.payload?.prompt)}
                   </div>
 
-                  {job.payload?.subject && (
+                  {toText(job.payload?.subject) && (
                     <div className={styles.emailSubject}>
-                      Subject: {job.payload.subject}
+                      Subject: {toText(job.payload?.subject)}
                     </div>
                   )}
 
-                  {job.payload?.html ? (
+                  {toText(job.payload?.html) ? (
                     <div>
                       <div className={styles.metaLabel} style={{ marginBottom: '0.5rem' }}>
                         Rendered Email HTML Preview:
@@ -165,7 +171,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ jobId, isOpen, o
                       <iframe
                         title="Email HTML Preview"
                         className={styles.emailIframe}
-                        srcDoc={job.payload.html}
+                        srcDoc={toText(job.payload?.html)}
                       />
                     </div>
                   ) : (
@@ -180,10 +186,10 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({ jobId, isOpen, o
               {job.type === 'ai' && (
                 <div>
                   <div className={styles.promptBox}>
-                    <strong>Prompt: </strong> {job.payload?.prompt}
+                    <strong>Prompt: </strong> {toText(job.payload?.prompt)}
                   </div>
-                  {job.payload?.response ? (
-                    <div className={styles.aiResponseBox}>{job.payload.response}</div>
+                  {toText(job.payload?.response) ? (
+                    <div className={styles.aiResponseBox}>{toText(job.payload?.response)}</div>
                   ) : (
                     <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                       AI response generation in progress...
