@@ -22,7 +22,7 @@ export const dbOperationRateLimiter = rateLimit({
 
 export const jobCreationRateLimiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 5,
+  limit: 500,
 
   standardHeaders: "draft-8",
   legacyHeaders: false,

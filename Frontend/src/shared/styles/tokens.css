@@ -1,0 +1,152 @@
+/* ============================================================
+   QueueForge Design System — Tokens
+   Palette: warm charcoal blacks + amber/orange primary
+   Deliberately avoids the cliché indigo-on-dark AI look
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ── Surfaces ───────────────────────────────────────────── */
+  --bg-base:    #09090B;   /* near-black, warm undertone     */
+  --bg-dark:    #0F0F12;   /* page background                */
+  --bg-card:    #18181C;   /* card surfaces                  */
+  --bg-card-hover: #202026;
+  --bg-elevated: #252529;  /* raised elements, selects       */
+  --bg-input:   #101013;   /* input fields                   */
+
+  /* ── Borders & Dividers ─────────────────────────────────── */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.22);
+  --border-focus: #F97316;   /* orange focus ring             */
+
+  /* ── Text ───────────────────────────────────────────────── */
+  --text-primary:   #FAFAFA;
+  --text-secondary: #A1A1AA;  /* zinc-400                    */
+  --text-muted:     #71717A;  /* zinc-500                    */
+  --text-inverse:   #09090B;
+
+  /* ── Primary Accent — Amber Orange ─────────────────────── */
+  /* Distinct from the indigo/violet AI cliché               */
+  --primary:        #F97316;   /* orange-500                 */
+  --primary-hover:  #EA6C0A;   /* orange-600                 */
+  --primary-dim:    rgba(249, 115, 22, 0.12);
+  --primary-glow:   rgba(249, 115, 22, 0.30);
+
+  /* ── Secondary Accent — Teal ────────────────────────────── */
+  --secondary:      #2DD4BF;   /* teal-400                   */
+  --secondary-dim:  rgba(45, 212, 191, 0.12);
+
+  /* ── Tertiary Accent — Warm Lime ───────────────────────── */
+  --accent-lime:    #A3E635;   /* lime-400 — used for "ready" states */
+  --accent-rose:    #FB7185;
+
+  /* ── Job Status Chips ───────────────────────────────────── */
+  /* Status pending — warm amber (not yellow, distinct from primary) */
+  --status-pending-bg:     rgba(251, 191, 36, 0.10);
+  --status-pending-border: rgba(251, 191, 36, 0.28);
+  --status-pending-text:   #FCD34D;
+
+  /* Status active — blue (calm, neutral) */
+  --status-active-bg:      rgba(56, 189, 248, 0.10);
+  --status-active-border:  rgba(56, 189, 248, 0.28);
+  --status-active-text:    #7DD3FC;
+
+  /* Status completed — teal (matches secondary) */
+  --status-completed-bg:   rgba(45, 212, 191, 0.10);
+  --status-completed-border: rgba(45, 212, 191, 0.28);
+  --status-completed-text: #5EEAD4;
+
+  /* Status failed — rose */
+  --status-failed-bg:      rgba(251, 113, 133, 0.10);
+  --status-failed-border:  rgba(251, 113, 133, 0.28);
+  --status-failed-text:    #FDA4AF;
+
+  /* Status delayed — violet (one of the few purples, used intentionally) */
+  --status-delayed-bg:     rgba(167, 139, 250, 0.10);
+  --status-delayed-border: rgba(167, 139, 250, 0.28);
+  --status-delayed-text:   #C4B5FD;
+
+  /* ── Spacing ────────────────────────────────────────────── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* ── Radius ─────────────────────────────────────────────── */
+  --radius-sm:   5px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:   'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ── Shadows ────────────────────────────────────────────── */
+  --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-lg:   0 12px 28px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 24px var(--primary-glow);
+}
+
+/* ── Global Reset & Base ────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 15.5px;       /* was 14px — now readable */
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Scrollbars ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.05); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.spinner {
+  animation: spin 0.85s linear infinite;
+}

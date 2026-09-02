@@ -6,12 +6,11 @@ import { logger } from "../../shared/logger.ts";
 import * as jobRepo from "../../job/job.repository.ts";
 import { finishStepService } from "../../batchJob/batchJob.service.ts";
 import { WorkerSchema } from "../../shared/zod.schema.ts";
-import { ImageWorkerProcessingServiceDataSchema } from "./image.zodSchema.ts";
 import path from "node:path";
 
 export const imageWorker = new Worker(
   "image",
-  path.join(__dirname, "image.processor.ts"),
+  path.join(process.cwd(), "src", "queues", "image", "image.processor.ts"),
   {
     connection,
     removeOnComplete: {

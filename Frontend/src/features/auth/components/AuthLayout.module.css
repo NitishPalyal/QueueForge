@@ -1,0 +1,106 @@
+/* ── Auth Page ──────────────────────────────────────────── */
+.authWrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-dark);
+  padding: var(--space-6);
+  /* Subtle radial background — not an obvious gradient */
+  background-image: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(249, 115, 22, 0.08), transparent);
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.brandLogo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  letter-spacing: -0.03em;
+}
+
+.brandLogo svg { color: var(--primary); }
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* ── Form ───────────────────────────────────────────────── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.input::placeholder { color: var(--text-muted); }
+
+.input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-dim);
+}
+
+.inputError { border-color: var(--status-failed-text); }
+
+.errorMessage {
+  font-size: 0.8rem;
+  color: var(--status-failed-text);
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  margin-top: var(--space-6);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  margin-left: var(--space-1);
+}
+
+.link:hover { text-decoration: underline; }

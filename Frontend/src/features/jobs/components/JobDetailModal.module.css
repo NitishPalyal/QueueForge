@@ -1,0 +1,152 @@
+/* ── Job Detail Modal Body ──────────────────────────────── */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-4);
+  background-color: var(--bg-base);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.metaLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.metaValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.errorBox {
+  background-color: var(--status-failed-bg);
+  border: 1px solid var(--status-failed-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  color: var(--status-failed-text);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  white-space: pre-wrap;
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.01em;
+}
+
+.payloadBox {
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.emailSubject {
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.emailIframe {
+  width: 100%;
+  min-height: 220px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+}
+
+.promptBox {
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  line-height: 1.55;
+}
+
+.aiResponseBox {
+  background-color: var(--bg-card-hover);
+  border: 1px solid var(--border-medium);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.imageCard {
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageCardHeader {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background-color: var(--bg-base);
+  border-bottom: 1px solid var(--border-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.imagePreview {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  background-color: #000;
+  display: block;
+}
+
+.loadingCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

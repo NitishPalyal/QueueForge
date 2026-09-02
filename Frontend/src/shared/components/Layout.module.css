@@ -1,0 +1,205 @@
+/* ── Sidebar Layout ─────────────────────────────────────── */
+.layoutWrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+}
+
+.sidebar {
+  width: 240px;
+  background-color: var(--bg-base);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: var(--space-5) var(--space-4) var(--space-5);
+}
+
+/* ── Brand ──────────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-2) var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.brandLogo {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
+  flex-shrink: 0;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.brandName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.brandTagline {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Nav Items ──────────────────────────────────────────── */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--space-5);
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.navItem:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+
+.navItemActive {
+  background-color: var(--primary-dim);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.navItemActive svg {
+  color: var(--primary);
+}
+
+/* ── Socket Status ──────────────────────────────────────── */
+.socketStatus {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--status-completed-text);
+  box-shadow: 0 0 6px var(--status-completed-text);
+  flex-shrink: 0;
+}
+
+/* ── User Footer ────────────────────────────────────────── */
+.userFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.82rem;
+  flex-shrink: 0;
+}
+
+.userMeta {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.userName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logoutBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.12s ease, background-color 0.12s ease;
+  flex-shrink: 0;
+}
+
+.logoutBtn:hover {
+  color: var(--status-failed-text);
+  background-color: var(--status-failed-bg);
+}
+
+/* ── Main Content ───────────────────────────────────────── */
+.mainContent {
+  margin-left: 240px;
+  flex: 1;
+  padding: var(--space-8) var(--space-10);
+  min-width: 0;
+  max-width: calc(100vw - 240px);
+}

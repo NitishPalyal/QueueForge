@@ -1,0 +1,95 @@
+/* ── Analytics & Benchmarks Page ────────────────────────── */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.header { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* ── Info Banner ────────────────────────────────────────── */
+.noticeBanner {
+  background-color: var(--primary-dim);
+  border: 1px solid var(--primary-glow);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+/* ── Benchmark Control Cards ────────────────────────────── */
+.controlsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.benchmarkCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  transition: border-color 0.12s ease;
+}
+
+.benchmarkCard:hover { border-color: var(--border-medium); }
+
+/* ── Chart Section ──────────────────────────────────────── */
+.chartCard {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.chartHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chartTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+}
+
+/* ── Loading State (sized for multi-second runs) ────────── */
+.loadingOverlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  gap: var(--space-3);
+  color: var(--text-secondary);
+  background-color: var(--bg-base);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border-medium);
+  font-size: 0.9rem;
+}

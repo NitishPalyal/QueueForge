@@ -1,0 +1,140 @@
+/* ── Jobs Page ──────────────────────────────────────────── */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.filtersBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  background-color: var(--bg-card);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.filterLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tabButton {
+  padding: 0.32rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.tabButton:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-elevated);
+}
+
+.tabActive {
+  background-color: var(--primary-dim);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* ── Table ──────────────────────────────────────────────── */
+.tableWrapper {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  background-color: var(--bg-base);
+  padding: 0.75rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.table td {
+  padding: 0.85rem 1.1rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.table tr:last-child td { border-bottom: none; }
+
+.table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.table tbody tr:hover { background-color: var(--bg-card-hover); }
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.actionsCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.actionIconBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.1s ease, background-color 0.1s ease;
+}
+
+.actionIconBtn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-elevated);
+}
+
+.emptyState {
+  padding: 4rem;
+  text-align: center;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.9rem;
+}

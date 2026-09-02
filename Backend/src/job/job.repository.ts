@@ -16,7 +16,7 @@ export async function findAll(limit: number, skip: number) {
       select: {
         id: true,
         type: true,
-        queueName: true,
+        queue_name: true,
         status: true,
         priority: true,
         attempts: true,
