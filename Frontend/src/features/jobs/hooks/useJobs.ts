@@ -7,16 +7,39 @@ import {
 } from "../api/jobsApi";
 import { queryClient } from "../../../shared/lib/queryClient";
 import { toast } from "sonner";
-import type { JobStatus, QueueName } from "../../../shared/types/api";
+import type {
+  JobStatus,
+  JobSummary,
+  QueueName,
+} from "../../../shared/types/api";
 
-const extractErrorMessage = (err: any, fallback: string): string => {
-  if (typeof err?.response?.data?.message === "string")
-    return err.response.data.message;
-  if (typeof err?.response?.data?.error === "string")
-    return err.response.data.error;
-  if (typeof err?.response?.data?.error?.message === "string")
-    return err.response.data.error.message;
-  if (typeof err?.message === "string") return err.message;
+type ErrorLike = {
+  response?: {
+    data?: {
+      message?: string;
+      error?: string | { message?: string };
+    };
+  };
+  message?: string;
+};
+
+const extractErrorMessage = (err: unknown, fallback: string): string => {
+  const typedError = err as ErrorLike | undefined;
+  if (typeof typedError?.response?.data?.message === "string") {
+    return typedError.response.data.message;
+  }
+  if (typeof typedError?.response?.data?.error === "string") {
+    return typedError.response.data.error;
+  }
+  if (
+    typedError?.response?.data &&
+    typeof typedError.response.data.error === "object" &&
+    typedError.response.data.error &&
+    typeof typedError.response.data.error.message === "string"
+  ) {
+    return typedError.response.data.error.message;
+  }
+  if (typeof typedError?.message === "string") return typedError.message;
   return fallback;
 };
 
@@ -42,7 +65,7 @@ export const useJobsList = (
         return await jobsApi.getAllJobs(page, limit);
       }
 
-      let resData: { totalJobs: number; jobs: any[] } = {
+      let resData: { totalJobs: number; jobs: JobSummary[] } = {
         totalJobs: 0,
         jobs: [],
       };
@@ -120,7 +143,7 @@ export const useCreateEmailJob = () => {
         description: `Job ID: ${getJobIdFromResponse(data)} is now processing`,
       });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       toast.error("Failed to Queue Email Job", {
         description: extractErrorMessage(err, "Failed to queue email job"),
       });
@@ -137,7 +160,7 @@ export const useCreateAiJob = () => {
         description: `Job ID: ${getJobIdFromResponse(data)} is pending execution`,
       });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       toast.error("Failed to Queue AI Job", {
         description: extractErrorMessage(err, "Failed to queue AI job"),
       });
@@ -155,7 +178,7 @@ export const useCreateImageJob = () => {
         description: `Job ID: ${getJobIdFromResponse(data)} added for optimization`,
       });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       toast.error("Failed to Queue Image Job", {
         description: extractErrorMessage(
           err,
@@ -181,7 +204,7 @@ export const useRetryJob = () => {
         description: `Job ${retriedJob.id} re-queued successfully.`,
       });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       toast.error("Failed to Retry Job", {
         description: extractErrorMessage(err, "Failed to retry job"),
       });
@@ -199,7 +222,7 @@ export const useDeleteJob = () => {
         description: "Job record and related assets removed.",
       });
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
       toast.error("Failed to Delete Job", {
         description: extractErrorMessage(err, "Failed to delete job"),
       });

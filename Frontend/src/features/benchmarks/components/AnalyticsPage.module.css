@@ -5,7 +5,12 @@
   gap: var(--space-8);
 }
 
-.header { display: flex; flex-direction: column; gap: var(--space-1); }
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-2);
+}
 
 .title {
   font-size: 1.85rem;
@@ -22,8 +27,12 @@
 
 /* ── Info Banner ────────────────────────────────────────── */
 .noticeBanner {
-  background-color: var(--primary-dim);
-  border: 1px solid var(--primary-glow);
+  background: linear-gradient(
+    135deg,
+    rgba(249, 115, 22, 0.08),
+    rgba(168, 85, 247, 0.06)
+  );
+  border: 1px solid rgba(249, 115, 22, 0.3);
   border-radius: var(--radius-lg);
   padding: var(--space-4) var(--space-5);
   display: flex;
@@ -32,16 +41,22 @@
   color: var(--text-primary);
   font-size: 0.875rem;
   line-height: 1.55;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.noticeBanner strong {
+  color: var(--text-primary);
 }
 
 /* ── Benchmark Control Cards ────────────────────────────── */
 .controlsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: var(--space-4);
 }
 
 .benchmarkCard {
+  position: relative;
   background-color: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
@@ -50,10 +65,27 @@
   flex-direction: column;
   justify-content: space-between;
   gap: var(--space-4);
-  transition: border-color 0.12s ease;
+  transition:
+    border-color 0.12s ease,
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+  overflow: hidden;
 }
 
-.benchmarkCard:hover { border-color: var(--border-medium); }
+.benchmarkCard::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--primary), var(--accent-purple));
+  opacity: 0.8;
+}
+
+.benchmarkCard:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
 
 /* ── Chart Section ──────────────────────────────────────── */
 .chartCard {
@@ -64,12 +96,14 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
 }
 
 .chartHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-3);
 }
 
 .chartTitle {
@@ -85,10 +119,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 320px;
   padding: 4rem;
   gap: var(--space-3);
   color: var(--text-secondary);
-  background-color: var(--bg-base);
+  background: linear-gradient(180deg, var(--bg-base), rgba(15, 23, 42, 0.22));
   border-radius: var(--radius-lg);
   border: 1px dashed var(--border-medium);
   font-size: 0.9rem;

@@ -16,10 +16,13 @@
   white-space: nowrap;
   user-select: none;
   letter-spacing: -0.01em;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.12);
 }
 
 .button:focus-visible {
-  box-shadow: 0 0 0 2px var(--bg-dark), 0 0 0 4px var(--primary);
+  box-shadow:
+    0 0 0 2px var(--bg-dark),
+    0 0 0 4px var(--primary);
 }
 
 .button:disabled {
@@ -35,6 +38,7 @@
 }
 .primary:hover:not(:disabled) {
   background-color: var(--primary-hover);
+  box-shadow: 0 10px 20px rgba(249, 115, 22, 0.18);
 }
 
 /* Secondary — dim surface */

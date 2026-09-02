@@ -113,9 +113,33 @@ export const jobsApi = {
   // Get Status Filtered Jobs (unpaginated)
   getJobsByStatus: async (
     status: JobStatus,
-  ): Promise<{ totalJobs: number; jobs: any[] }> => {
+  ): Promise<{
+    totalJobs: number;
+    jobs: Array<{
+      id: string;
+      type: string;
+      queue_name?: string;
+      queueName?: string;
+      status: JobStatus;
+      priority: number;
+      attempts: number;
+      createdAt: string;
+    }>;
+  }> => {
     const response = await apiClient.get<
-      APIResponse<{ totalJobs: number; jobs: any[] }>
+      APIResponse<{
+        totalJobs: number;
+        jobs: Array<{
+          id: string;
+          type: string;
+          queue_name?: string;
+          queueName?: string;
+          status: JobStatus;
+          priority: number;
+          attempts: number;
+          createdAt: string;
+        }>;
+      }>
     >(`/api/job/getAll/${status}/Statusjobs`);
     return response.data.data || { totalJobs: 0, jobs: [] };
   },
@@ -123,9 +147,33 @@ export const jobsApi = {
   // Get Queue Filtered Jobs (unpaginated)
   getJobsByQueue: async (
     queue: QueueName,
-  ): Promise<{ totalJobs: number; jobs: any[] }> => {
+  ): Promise<{
+    totalJobs: number;
+    jobs: Array<{
+      id: string;
+      type: string;
+      queue_name?: string;
+      queueName?: string;
+      status: JobStatus;
+      priority: number;
+      attempts: number;
+      createdAt: string;
+    }>;
+  }> => {
     const response = await apiClient.get<
-      APIResponse<{ totalJobs: number; jobs: any[] }>
+      APIResponse<{
+        totalJobs: number;
+        jobs: Array<{
+          id: string;
+          type: string;
+          queue_name?: string;
+          queueName?: string;
+          status: JobStatus;
+          priority: number;
+          attempts: number;
+          createdAt: string;
+        }>;
+      }>
     >(`/api/job/getAll/${queue}/Jobs`);
     return response.data.data || { totalJobs: 0, jobs: [] };
   },
@@ -134,9 +182,33 @@ export const jobsApi = {
   getJobsByQueueAndStatus: async (
     queue: QueueName,
     status: JobStatus,
-  ): Promise<{ totalJobs: number; jobs: any[] }> => {
+  ): Promise<{
+    totalJobs: number;
+    jobs: Array<{
+      id: string;
+      type: string;
+      queue_name?: string;
+      queueName?: string;
+      status: JobStatus;
+      priority: number;
+      attempts: number;
+      createdAt: string;
+    }>;
+  }> => {
     const response = await apiClient.get<
-      APIResponse<{ totalJobs: number; jobs: any[] }>
+      APIResponse<{
+        totalJobs: number;
+        jobs: Array<{
+          id: string;
+          type: string;
+          queue_name?: string;
+          queueName?: string;
+          status: JobStatus;
+          priority: number;
+          attempts: number;
+          createdAt: string;
+        }>;
+      }>
     >(`/api/job/getAll/${queue}/${status}/jobs`);
     return response.data.data || { totalJobs: 0, jobs: [] };
   },
