@@ -1,0 +1,86 @@
+import type { Job, Status } from "../../generated/prisma/client.ts";
+import { type CreateAiResponseJobServiceParams, type CreateImageProcessingJobServiceParams, type CreateMailJobServiceParams, type RemoveJobServiceParams, type GetImageJobUploadedAndProcessedImageUrlServiceParams, type DeleteImageJobUploadedAndProcessedImageServiceParams, type DeleteJobServiceParams, type getAllJobsServiceParams, type RetryJobServiceParams } from "./job.types.ts";
+export declare function createMailJobService({ to, prompt, idempotency_key, priority, }: CreateMailJobServiceParams): Promise<Job>;
+export declare function createAiResponseJobService({ prompt, idempotency_key, priority, }: CreateAiResponseJobServiceParams): Promise<Job>;
+export declare function createImageProcessingJobService({ uploadedImageKey, idempotency_key, priority, }: CreateImageProcessingJobServiceParams): Promise<Job>;
+export declare function getJobService(id: string): Promise<Job>;
+export declare function getAllJobsService({ limit, page, }: getAllJobsServiceParams): Promise<{
+    jobs: {
+        id: string;
+        createdAt: Date;
+        type: string;
+        queue_name: string;
+        status: Status;
+        priority: number;
+        attempts: number;
+    }[];
+    totalJobs: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}>;
+export declare function deleteJobService({ isImage, jobId, payload, queueName, }: DeleteJobServiceParams): Promise<void>;
+export declare function getAllQueueJobsService(queue: string): Promise<{
+    error: string | null;
+    id: string;
+    createdAt: Date;
+    result: import("@prisma/client/runtime/client").JsonValue | null;
+    type: string;
+    queue_name: string;
+    payload: import("@prisma/client/runtime/client").JsonValue;
+    status: Status;
+    priority: number;
+    attempts: number;
+    max_attempts: number;
+    idempotency_key: string;
+    startedAt: Date | null;
+    completedAt: Date | null;
+    scheduledFor: Date | null;
+    stepOrder: number | null;
+    batchId: string | null;
+}[]>;
+export declare function getAllStatusJobsService(status: Status): Promise<{
+    error: string | null;
+    id: string;
+    createdAt: Date;
+    result: import("@prisma/client/runtime/client").JsonValue | null;
+    type: string;
+    queue_name: string;
+    payload: import("@prisma/client/runtime/client").JsonValue;
+    status: Status;
+    priority: number;
+    attempts: number;
+    max_attempts: number;
+    idempotency_key: string;
+    startedAt: Date | null;
+    completedAt: Date | null;
+    scheduledFor: Date | null;
+    stepOrder: number | null;
+    batchId: string | null;
+}[]>;
+export declare function getAllQueueStatusJobsService(queue: string, status: Status): Promise<{
+    error: string | null;
+    id: string;
+    createdAt: Date;
+    result: import("@prisma/client/runtime/client").JsonValue | null;
+    type: string;
+    queue_name: string;
+    payload: import("@prisma/client/runtime/client").JsonValue;
+    status: Status;
+    priority: number;
+    attempts: number;
+    max_attempts: number;
+    idempotency_key: string;
+    startedAt: Date | null;
+    completedAt: Date | null;
+    scheduledFor: Date | null;
+    stepOrder: number | null;
+    batchId: string | null;
+}[]>;
+export declare function retryJobService({ jobId, queueName, }: RetryJobServiceParams): Promise<Job>;
+export declare function removeJobFromQueueService({ jobId, queueName, }: RemoveJobServiceParams): Promise<void>;
+export declare function getImageJobUploadedAndProcessedImageUrlService({ processedImageKey, uploadedImageKey, }: GetImageJobUploadedAndProcessedImageUrlServiceParams): Promise<{
+    uploadedImageUrl: string;
+    processedImageUrl: string | null;
+}>;
+export declare function deleteImageJobUploadedAndProcessedImageService({ processedImageKey, uploadedImageKey, }: DeleteImageJobUploadedAndProcessedImageServiceParams): Promise<void>;
+//# sourceMappingURL=job.service.d.ts.map

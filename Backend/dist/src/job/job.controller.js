@@ -1,0 +1,457 @@
+import { addJobInAiQueueService } from "../queues/ai/ai.service.js";
+import { logger } from "../shared/logger.js";
+import { FolderName, isMimeType } from "../queues/image/image.types.js";
+import { ImageJobPayloadSchema } from "../shared/zod.schema.js";
+import { QUEUES, DEFAULT_JOB_PRIORITY, normalizeJobPriority, } from "./job.types.js";
+import { addJobInImageQueueService, uploadToStorageService, } from "../queues/image/image.service.js";
+import { createAiResponseJobService, createImageProcessingJobService, createMailJobService, deleteJobService, getAllJobsService, getAllQueueJobsService, getAllQueueStatusJobsService, getAllStatusJobsService, getImageJobUploadedAndProcessedImageUrlService, getJobService, retryJobService, } from "./job.service.js";
+export async function createEmailJobController(req, res) {
+    try {
+        const { to, prompt, idempotency_key, priority } = req.body;
+        if (!to || !prompt || !idempotency_key || priority === undefined) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields in request body.",
+            });
+        }
+        const job = await createMailJobService({
+            to,
+            prompt,
+            idempotency_key,
+            priority,
+        });
+        if (!job) {
+            return res.status(401).json({
+                success: false,
+                message: "Failed to Create Email Job.",
+            });
+        }
+        await addJobInAiQueueService({
+            isMail: true,
+            jobId: job.id,
+            payload: { to, prompt },
+            ...(job.batchId ? { batchId: job.batchId } : {}),
+            isLastStep: false,
+            priority,
+        });
+        res.status(202).json({
+            success: true,
+            message: "Email Job created and added to Queue successfully.",
+            data: { jobId: job.id, jobStatus: job.status, createdAt: job.createdAt },
+        });
+    }
+    catch (error) {
+        logger.error("Error in createEmailJobController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create email job.",
+        });
+    }
+}
+export async function createAiResponseJobController(req, res) {
+    try {
+        const { prompt, idempotency_key, priority } = req.body;
+        if (!prompt || !idempotency_key || priority === undefined) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields in request body.",
+            });
+        }
+        const job = await createAiResponseJobService({
+            prompt,
+            idempotency_key,
+            priority,
+        });
+        if (!job) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to Create Ai Response Job.",
+            });
+        }
+        await addJobInAiQueueService({
+            isMail: false,
+            jobId: job.id,
+            payload: { prompt },
+            ...(job.batchId ? { batchId: job.batchId } : {}),
+            isLastStep: false,
+            priority,
+        });
+        res.status(202).json({
+            success: true,
+            message: "Ai Job created and added to Queue successfully.",
+            data: { jobId: job.id, jobStatus: job.status, createdAt: job.createdAt },
+        });
+    }
+    catch (error) {
+        logger.error("Error in createAiResponseJobController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create Ai Response job.",
+        });
+    }
+}
+export async function createImageProcessingJobController(req, res) {
+    try {
+        console.log("syifpewhfewifewuo ewuhuoe foew suiiiiii");
+        const idempotency_key = req.get("idempotency_key");
+        const priorityRaw = req.get("priority");
+        const parsedPriority = priorityRaw ? Number(priorityRaw) : undefined;
+        if (!idempotency_key) {
+            console.log("no key");
+            return res.status(400).json({
+                success: false,
+                message: "Idempotency_key is required",
+            });
+        }
+        if (parsedPriority === undefined ||
+            !Number.isInteger(parsedPriority) ||
+            parsedPriority < 1 ||
+            parsedPriority > 10) {
+            console.log("no priority");
+            return res.status(400).json({
+                success: false,
+                message: "Priority header must be an integer between 1 and 10.",
+            });
+        }
+        const priority = normalizeJobPriority(parsedPriority);
+        const file = req.file;
+        if (!file) {
+            console.log("no file");
+            return res.status(400).json({
+                success: false,
+                message: "Image file is required.",
+            });
+        }
+        if (!isMimeType(file.mimetype)) {
+            return res.status(401).json({
+                success: false,
+                message: "Unsupported image type.",
+            });
+        }
+        const uploadedImageKey = await uploadToStorageService({
+            buffer: file.buffer,
+            mimeType: file.mimetype,
+            folderName: FolderName.uploaded,
+        });
+        const job = await createImageProcessingJobService({
+            uploadedImageKey,
+            idempotency_key,
+            priority,
+        });
+        if (!job) {
+            return res.status(401).json({
+                success: false,
+                message: "Failed to Create Image Processing Job.",
+            });
+        }
+        await addJobInImageQueueService({
+            jobId: job.id,
+            uploadedImageKey,
+            ...(job.batchId ? { batchId: job.batchId } : {}),
+            isLastStep: false,
+            priority,
+        });
+        res.status(202).json({
+            success: true,
+            message: "Image Processing Job created and added to Queue successfully.",
+            data: { jobId: job.id, jobStatus: job.status, createdAt: job.createdAt },
+        });
+    }
+    catch (error) {
+        logger.error("Error in createImageProcessingJobController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create Image Processing job.",
+        });
+    }
+}
+export async function getAllJobsController(req, res) {
+    try {
+        const page = Number(req.query.page ?? 1);
+        const limit = Number(req.query.limit ?? 50);
+        const { jobs, totalJobs, hasNextPage, hasPreviousPage } = await getAllJobsService({
+            limit,
+            page,
+        });
+        if (!jobs) {
+            return res.status(404).json({
+                success: false,
+                message: "No Jobs Found.",
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: "All Jobs Fecthed Successfully.",
+            data: {
+                limit: Number(limit),
+                page: Number(page),
+                totalJobs,
+                jobs,
+                hasNextPage,
+                hasPreviousPage,
+            },
+        });
+    }
+    catch (error) {
+        logger.error("Error in getAllJobsController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch all jobs.",
+        });
+    }
+}
+export async function retryJobByQueueAndIdController(req, res) {
+    try {
+        const { id, queue } = req.params;
+        if (!id || !queue) {
+            return res.status(400).json({
+                success: false,
+                message: "Job id and queue name are required.",
+            });
+        }
+        const retriedJob = await retryJobService({
+            jobId: id,
+            queueName: queue,
+        });
+        return res.status(200).json({
+            success: true,
+            message: "Job retried successfully.",
+            data: { job: retriedJob },
+        });
+    }
+    catch (error) {
+        logger.error("Error in retryJobByQueueAndIdController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: error instanceof Error ? error.message : "Failed to retry job.",
+        });
+    }
+}
+export async function getJobByIdController(req, res) {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "Job id is required.",
+            });
+        }
+        const job = await getJobService(id);
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: `No Job with id:- "${id}" found.`,
+            });
+        }
+        if (job.type === "image") {
+            const payload = ImageJobPayloadSchema.parse(job.payload);
+            const { uploadedImageUrl, processedImageUrl } = await getImageJobUploadedAndProcessedImageUrlService({
+                uploadedImageKey: payload.uploadedImageKey,
+                processedImageKey: payload.processedImageKey ?? "",
+            });
+            if (!processedImageUrl) {
+                return res.status(200).json({
+                    success: true,
+                    message: `Job : "${id}" Fecthed Successfully.`,
+                    data: { job, uploadedImageUrl },
+                });
+            }
+            return res.status(200).json({
+                success: true,
+                message: `Job : "${id}" Fecthed Successfully.`,
+                data: { job, uploadedImageUrl, processedImageUrl },
+            });
+        }
+        else {
+            return res.status(200).json({
+                success: true,
+                message: `Job : "${id}" Fecthed Successfully.`,
+                data: { job },
+            });
+        }
+    }
+    catch (error) {
+        logger.error("Error in getJobController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch job.",
+        });
+    }
+}
+export async function deleteJobByQueueAndIdController(req, res) {
+    try {
+        const { id, queue } = req.params;
+        if (!id || !queue) {
+            return res.status(400).json({
+                success: false,
+                message: "Job id and queue name are required.",
+            });
+        }
+        const queueName = QUEUES[queue];
+        if (!queueName) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid queue name: ${queue}`,
+            });
+        }
+        const job = await getJobService(id);
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: `No Job with id:- "${id}" found.`,
+            });
+        }
+        if (job.type === "image") {
+            await deleteJobService({
+                isImage: true,
+                jobId: job.id,
+                queueName: queue,
+                payload: job.payload,
+            });
+            return res.status(200).json({
+                success: true,
+                message: `Job with id: "${id}" deleted Successfully.`,
+            });
+        }
+        else {
+            await deleteJobService({
+                isImage: false,
+                jobId: job.id,
+                queueName: queue,
+            });
+            return res.status(200).json({
+                success: true,
+                message: `Job with id: "${id}" deleted Successfully.`,
+            });
+        }
+    }
+    catch (error) {
+        logger.error("Error in deleteJobByQueueAndIdController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to delete job.",
+        });
+    }
+}
+export async function getJobStatusByIdController(req, res) {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: "Job id is required.",
+            });
+        }
+        const job = await getJobService(id);
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: `No Job with id:- "${id}" found.`,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: `Job : "${id}" status Fecthed Successfully.`,
+            data: { status: job.status },
+        });
+    }
+    catch (error) {
+        logger.error("Error in getJobStatusByIdController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch job status.",
+        });
+    }
+}
+export async function getAllJobsByStatusController(req, res) {
+    try {
+        const status = req.params.status;
+        if (!status) {
+            return res.status(400).json({
+                success: false,
+                message: "Job status is required.",
+            });
+        }
+        const jobs = await getAllStatusJobsService(status);
+        if (!jobs) {
+            return res.status(404).json({
+                success: false,
+                message: `No jobs with status ${status} found.`,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: `All ${status} Jobs fecthed Successfully.`,
+            data: { totalJobs: jobs.length, jobs },
+        });
+    }
+    catch (error) {
+        logger.error("Error in getAllJobsByStatusController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch jobs by status.",
+        });
+    }
+}
+export async function getAllJobsByQueueController(req, res) {
+    try {
+        const queue = req.params.queue;
+        if (!queue) {
+            return res.status(400).json({
+                success: false,
+                message: "Queue name is required.",
+            });
+        }
+        const jobs = await getAllQueueJobsService(queue);
+        if (!jobs) {
+            return res.status(404).json({
+                success: false,
+                message: `${queue} have no jobs.`,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: `All ${queue} jobs Fecthed Successfully.`,
+            data: { totalJobs: jobs.length, jobs },
+        });
+    }
+    catch (error) {
+        logger.error("Error in getAllJobsByQueueController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch jobs by queue.",
+        });
+    }
+}
+export async function getAllJobsByQueueAndStatusController(req, res) {
+    try {
+        const queue = req.params.queue;
+        const status = req.params.status;
+        if (!queue || !status) {
+            return res.status(400).json({
+                success: false,
+                message: "Queue name and status are required.",
+            });
+        }
+        const jobs = await getAllQueueStatusJobsService(queue, status);
+        if (!jobs) {
+            return res.status(404).json({
+                success: false,
+                message: `No jobs in ${queue} with status ${status} found.`,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: `All ${queue} jobs with ${status} status fecthed Successfully.`,
+            data: { totalJobs: jobs.length, jobs },
+        });
+    }
+    catch (error) {
+        logger.error("Error in getAllJobsByQueueAndStatusController", "job.controller", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch jobs by queue and status.",
+        });
+    }
+}
+//# sourceMappingURL=job.controller.js.map
