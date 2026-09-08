@@ -31,22 +31,21 @@ export const imageWorker = new Worker(
 
 imageWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
-  const jobId = String(job.id);
   logger.info(
     `Updating job attempt in IMAGE WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
     "image.worker",
   );
   Promise.all([
-    jobRepo.setStatusActive(jobPayload.dbJobId || jobId),
-    jobRepo.updateJobAttempt(jobPayload.dbJobId || jobId),
+    jobRepo.setStatusActive(jobPayload.jobId),
+    jobRepo.updateJobAttempt(jobPayload.jobId),
   ]);
 });
 
 imageWorker.on("completed", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
-  const jobId = String(job.id);
+
   setBatchStatusCompletedService({
-    dbJobId: jobPayload.dbJobId || jobId,
+    dbJobId: jobPayload.jobId,
     batchId: jobPayload.batchId,
     isLastStep: jobPayload.isLastStep,
   });
@@ -55,9 +54,8 @@ imageWorker.on("completed", (job) => {
 imageWorker.on("failed", (job, err) => {
   if (job) {
     const jobPayload = WorkerSchema.parse(job.data);
-    const jobId = String(job.id);
     setBatchStatusFailedService({
-      dbJobId: jobPayload.dbJobId || jobId,
+      dbJobId: jobPayload.jobId,
       batchId: jobPayload.batchId,
       isLastStep: jobPayload.isLastStep,
       error: err instanceof Error ? err.message : String(err),

@@ -14,7 +14,7 @@ import * as z from "zod";
  */
 export const BaseQueuePayloadSchema = z.object({
   jobData: z.record(z.string(), z.any()),
-  dbJobId: z.string().optional(),
+  jobId: z.string(),
   batchId: z.string().optional(),
   isLastStep: z.boolean().default(false),
 });
@@ -28,7 +28,7 @@ export const BaseQueuePayloadSchema = z.object({
  * - isLastStep: marks the last step in a sequence of queued actions
  */
 export const WorkerSchema = z.object({
-  dbJobId: z.string().optional(),
+  jobId: z.string(),
   batchId: z.string().optional(),
   isLastStep: z.boolean(),
 });

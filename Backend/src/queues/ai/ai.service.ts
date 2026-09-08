@@ -183,13 +183,12 @@ export async function addJobInAiQueueService({
       "generate-ai-response",
       {
         jobData: payload,
-        dbJobId: jobId,
+        jobId,
         batchId,
         isLastStep,
         isMail, // Keep this for worker to determine which handler to use
       },
       {
-        jobId,
         backoff: { type: "exponential", delay: 3000 },
         attempts: 3,
         ...(priority !== undefined ? { priority } : {}),

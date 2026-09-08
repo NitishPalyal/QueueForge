@@ -30,7 +30,7 @@ function buildFlowTreeService({
 }: buildFlowTreeServiceParam): FlowJob {
   try {
     const toFlowJob = ({ step, job, isLastStep }: toFlowJobParam): FlowJob => {
-      const meta = { dbJobId: job.id, batchId, isLastStep };
+      const meta = { jobId: job.id, batchId, isLastStep };
 
       if (step.type === "mail") {
         return {

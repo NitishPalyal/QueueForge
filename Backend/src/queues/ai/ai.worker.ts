@@ -28,12 +28,6 @@ import { WorkerSchema } from "../../shared/zod.schema.ts";
 export const aiWorker = new Worker(
   "ai",
   async (job) => {
-    const jobId = job.id;
-
-    if (!jobId) {
-      throw new Error("Missing job id in ai worker");
-    }
-
     // Determine if this is an email job or standard AI response job
     const isMail = (job.data as any).isMail === true;
 
@@ -42,14 +36,14 @@ export const aiWorker = new Worker(
       await generateAiResponseForEmailService({
         prompt: jobPayload.jobData.prompt,
         to: jobPayload.jobData.to,
-        jobId: jobPayload.dbJobId || jobId,
+        jobId: jobPayload.jobId,
         batchId: jobPayload.batchId,
         isLastStep: jobPayload.isLastStep,
       });
     } else {
       const jobPayload = AiWorkerAiResponseDataSchema.parse(job.data);
       await generateAiResponseService({
-        jobId: jobPayload.dbJobId || jobId,
+        jobId: jobPayload.jobId,
         prompt: jobPayload.jobData.prompt,
       });
     }
@@ -71,23 +65,22 @@ export const aiWorker = new Worker(
 
 aiWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
-  const jobId = String(job.id);
+
   logger.info(
     `Updating job attempt in AI WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
     "ai.worker",
   );
   Promise.all([
-    jobRepo.setStatusActive(jobPayload.dbJobId || jobId),
-    jobRepo.updateJobAttempt(jobPayload.dbJobId || jobId),
+    jobRepo.setStatusActive(jobPayload.jobId),
+    jobRepo.updateJobAttempt(jobPayload.jobId),
   ]);
 });
 
 aiWorker.on("completed", (job) => {
   if ((job.data as any).isMail) return;
   const jobPayload = WorkerSchema.parse(job.data);
-  const jobId = String(job.id);
   setBatchStatusCompletedService({
-    dbJobId: jobPayload.dbJobId || jobId,
+    dbJobId: jobPayload.jobId,
     batchId: jobPayload.batchId,
     isLastStep: jobPayload.isLastStep,
   });
@@ -98,7 +91,7 @@ aiWorker.on("failed", (job, err) => {
     const jobPayload = WorkerSchema.parse(job.data);
     const jobId = String(job.id);
     setBatchStatusFailedService({
-      dbJobId: jobPayload.dbJobId || jobId,
+      dbJobId: jobPayload.jobId,
       batchId: jobPayload.batchId,
       isLastStep: jobPayload.isLastStep,
       error: err instanceof Error ? err.message : String(err),

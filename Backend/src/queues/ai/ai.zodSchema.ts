@@ -25,7 +25,7 @@ export const AiEmailJobDataSchema = z.object({
  */
 export const AiWorkerEmailServiceDataSchema = z.object({
   jobData: AiEmailJobDataSchema,
-  dbJobId: z.string().optional(),
+  jobId: z.string(),
   batchId: z.string().optional(),
   isLastStep: z.boolean(),
 });
@@ -51,5 +51,5 @@ export const AiResponseJobDataSchema = z.object({
  */
 export const AiWorkerAiResponseDataSchema = z.object({
   jobData: AiResponseJobDataSchema,
-  dbJobId: z.string().optional(),
+  jobId: z.string(),
 });
