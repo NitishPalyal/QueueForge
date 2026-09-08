@@ -6,7 +6,10 @@ import {
   generateAiResponseForEmailService,
   generateAiResponseService,
 } from "./ai.service.ts";
-import { finishStepService } from "../../batchJob/batchJob.service.ts";
+import {
+  setBatchStatusCompletedService,
+  setBatchStatusFailedService,
+} from "../../batchJob/batchJob.service.ts";
 import {
   AiWorkerAiResponseDataSchema,
   AiWorkerEmailServiceDataSchema,
@@ -83,7 +86,7 @@ aiWorker.on("completed", (job) => {
   if ((job.data as any).isMail) return;
   const jobPayload = WorkerSchema.parse(job.data);
   const jobId = String(job.id);
-  finishStepService({
+  setBatchStatusCompletedService({
     dbJobId: jobPayload.dbJobId || jobId,
     batchId: jobPayload.batchId,
     isLastStep: jobPayload.isLastStep,
@@ -94,9 +97,11 @@ aiWorker.on("failed", (job, err) => {
   if (job) {
     const jobPayload = WorkerSchema.parse(job.data);
     const jobId = String(job.id);
-    jobRepo.setStatusFailed(
-      jobPayload.dbJobId || jobId,
-      err instanceof Error ? err.message : String(err),
-    );
+    setBatchStatusFailedService({
+      dbJobId: jobPayload.dbJobId || jobId,
+      batchId: jobPayload.batchId,
+      isLastStep: jobPayload.isLastStep,
+      error: err instanceof Error ? err.message : String(err),
+    });
   }
 });

@@ -7,13 +7,13 @@ import { ImageJobPayloadSchema } from "../shared/zod.schema.ts";
 import { logger } from "../shared/logger.ts";
 import {
   QUEUE_BY_TYPE,
-  type BatchStepMeta,
   type buildFlowTreeServiceParam,
   type createBatchParam,
-  type finishStepParam,
+  type setBatchStatusCompletedParam,
   type getAllBatchesServiceParams,
   type JobRow,
   type toFlowJobParam,
+  type setBatchStatusFailedParam,
 } from "./batchJob.types.ts";
 import {
   createAiResponseJobService,
@@ -126,15 +126,32 @@ export async function createBatchService({
   }
 }
 
-export async function finishStepService({
+export async function setBatchStatusCompletedService({
   dbJobId,
   batchId,
   isLastStep,
-}: finishStepParam) {
+}: setBatchStatusCompletedParam) {
   try {
     await JobRepo.setStatusCompleted(dbJobId);
     if (isLastStep && batchId) {
       await BatchJobRepo.setStatusCompleted(batchId);
+    }
+  } catch (error) {
+    logger.error("Error in finishStepService", "batchJob.service", error);
+    throw error;
+  }
+}
+
+export async function setBatchStatusFailedService({
+  dbJobId,
+  batchId,
+  isLastStep,
+  error,
+}: setBatchStatusFailedParam) {
+  try {
+    await JobRepo.setStatusFailed(dbJobId, error);
+    if (isLastStep && batchId) {
+      await BatchJobRepo.setStatusFailed(batchId);
     }
   } catch (error) {
     logger.error("Error in finishStepService", "batchJob.service", error);

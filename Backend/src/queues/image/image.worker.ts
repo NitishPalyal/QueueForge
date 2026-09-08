@@ -4,7 +4,10 @@ import os from "node:os";
 import { logger } from "../../shared/logger.ts";
 
 import * as jobRepo from "../../job/job.repository.ts";
-import { finishStepService } from "../../batchJob/batchJob.service.ts";
+import {
+  setBatchStatusCompletedService,
+  setBatchStatusFailedService,
+} from "../../batchJob/batchJob.service.ts";
 import { WorkerSchema } from "../../shared/zod.schema.ts";
 import path from "node:path";
 
@@ -42,7 +45,7 @@ imageWorker.on("active", (job) => {
 imageWorker.on("completed", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
   const jobId = String(job.id);
-  finishStepService({
+  setBatchStatusCompletedService({
     dbJobId: jobPayload.dbJobId || jobId,
     batchId: jobPayload.batchId,
     isLastStep: jobPayload.isLastStep,
@@ -53,9 +56,11 @@ imageWorker.on("failed", (job, err) => {
   if (job) {
     const jobPayload = WorkerSchema.parse(job.data);
     const jobId = String(job.id);
-    jobRepo.setStatusFailed(
-      jobPayload.dbJobId || jobId,
-      err instanceof Error ? err.message : String(err),
-    );
+    setBatchStatusFailedService({
+      dbJobId: jobPayload.dbJobId || jobId,
+      batchId: jobPayload.batchId,
+      isLastStep: jobPayload.isLastStep,
+      error: err instanceof Error ? err.message : String(err),
+    });
   }
 });

@@ -36,10 +36,16 @@ export interface createBatchParam {
   steps: Step[];
 }
 
-export interface finishStepParam {
+export interface setBatchStatusCompletedParam {
   dbJobId: string;
   batchId: string | undefined;
   isLastStep: boolean;
+}
+export interface setBatchStatusFailedParam {
+  dbJobId: string;
+  batchId: string | undefined;
+  isLastStep: boolean;
+  error: string;
 }
 
 export interface createBatchControllerBody {

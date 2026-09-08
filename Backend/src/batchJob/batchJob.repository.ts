@@ -33,20 +33,7 @@ export async function deleteBatch(id: string) {
     where: { id },
   });
 }
-// export async function updateJobPayload({
-//   id,
-//   payload,
-// }: {
-//   id: string;
-//   payload: Prisma.InputJsonObject;
-// }) {
-//   await prisma.job.update({
-//     where: { id },
-//     data: {
-//       payload,
-//     },
-//   });
-// }
+
 export async function setStatusActive(id: string) {
   await prisma.batch.update({
     where: { id },
@@ -55,6 +42,7 @@ export async function setStatusActive(id: string) {
     },
   });
 }
+
 export async function setStatusCompleted(id: string) {
   await prisma.job.update({
     where: { id },
@@ -64,7 +52,7 @@ export async function setStatusCompleted(id: string) {
     },
   });
 }
-export async function setStatusFailed(id: string, error: string) {
+export async function setStatusFailed(id: string) {
   await prisma.batch.update({
     where: { id },
     data: {
