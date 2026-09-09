@@ -6,7 +6,6 @@ import * as jobRepo from "../../job/job.repository.js";
 import { setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
 import { WorkerSchema } from "../../shared/zod.schema.js";
 export const mailWorker = new Worker("mail", async (job) => {
-    // Extract email data from canonical jobData structure
     const { to, subject, html } = job.data.jobData;
     await sendEmailService({ to, subject, html });
 }, {

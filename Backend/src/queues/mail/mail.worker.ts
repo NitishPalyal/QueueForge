@@ -8,12 +8,12 @@ import {
   setBatchStatusFailedService,
 } from "../../batchJob/batchJob.service.ts";
 import { WorkerSchema } from "../../shared/zod.schema.ts";
+import type { MailWorkerJobData } from "./mail.types.ts";
 
 export const mailWorker = new Worker(
   "mail",
   async (job) => {
-    // Extract email data from canonical jobData structure
-    const { to, subject, html } = (job.data as any).jobData;
+    const { to, subject, html } = (job.data as MailWorkerJobData).jobData;
     await sendEmailService({ to, subject, html });
   },
   {

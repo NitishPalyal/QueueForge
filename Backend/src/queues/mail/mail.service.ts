@@ -35,15 +35,15 @@ export async function addJobInMailQueueService({
   priority,
 }: MailQueuePayload) {
   try {
-    mailQueue.add(
+    await mailQueue.add(
       "send-email",
       {
         jobData: {
           to: payload.to,
           subject: payload.subject,
           html: payload.html,
-          jobId,
         },
+        jobId,
         batchId,
         isLastStep,
       },

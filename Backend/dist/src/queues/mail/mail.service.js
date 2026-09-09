@@ -22,13 +22,13 @@ export async function sendEmailService({ to, subject, html, text, }) {
 // ADD JOB IN MAIL QUEUE//
 export async function addJobInMailQueueService({ payload, jobId, batchId, isLastStep, priority, }) {
     try {
-        mailQueue.add("send-email", {
+        await mailQueue.add("send-email", {
             jobData: {
                 to: payload.to,
                 subject: payload.subject,
                 html: payload.html,
-                jobId,
             },
+            jobId,
             batchId,
             isLastStep,
         }, {

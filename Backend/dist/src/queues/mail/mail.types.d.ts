@@ -9,7 +9,17 @@ export type SendmailOptions = {
 export interface MailJobPayload extends Prisma.InputJsonObject {
     to: string;
     subject: string;
-    html: any;
+    html: string;
+}
+export interface MailWorkerJobData {
+    jobData: {
+        to: string;
+        subject: string;
+        html: string;
+    };
+    jobId: string;
+    batchId?: string;
+    isLastStep: boolean;
 }
 export interface MailQueuePayload {
     jobId: string;

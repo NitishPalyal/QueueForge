@@ -52,6 +52,7 @@ describe("mail queue service", () => {
         subject: "Welcome",
         html: "<p>Welcome</p>",
       },
+      batchId: "batch-1",
       isLastStep: true,
       priority: 4,
     });
@@ -65,9 +66,11 @@ describe("mail queue service", () => {
           html: "<p>Welcome</p>",
         },
         jobId: "mail-job-1",
+        batchId: "batch-1",
         isLastStep: true,
       }),
       expect.objectContaining({
+        jobId: "mail-job-1",
         attempts: 3,
         priority: 4,
       }),
