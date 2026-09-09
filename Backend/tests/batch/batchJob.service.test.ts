@@ -85,7 +85,7 @@ describe("batch job service", () => {
 
   // TEST FOR MARKING THE BATCH COMPLETE WHEN THE FINAL STEP FINISHES //
   it("marks the batch complete when the final step finishes", async () => {
-    await batchService.finishStepService({
+    await batchService.setBatchStatusCompletedService({
       dbJobId: "job-1",
       batchId: "batch-2",
       isLastStep: true,

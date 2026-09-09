@@ -64,11 +64,10 @@ describe("mail queue service", () => {
           subject: "Welcome",
           html: "<p>Welcome</p>",
         },
-        dbJobId: "mail-job-1",
+        jobId: "mail-job-1",
         isLastStep: true,
       }),
       expect.objectContaining({
-        jobId: "mail-job-1",
         attempts: 3,
         priority: 4,
       }),

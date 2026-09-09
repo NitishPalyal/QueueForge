@@ -69,11 +69,10 @@ describe("image queue service", () => {
       "image",
       expect.objectContaining({
         jobData: { uploadedImageKey: "upload-key" },
-        dbJobId: "img-job-1",
+        jobId: "img-job-1",
         isLastStep: false,
       }),
       expect.objectContaining({
-        jobId: "img-job-1",
         attempts: 3,
         priority: 8,
       }),

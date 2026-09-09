@@ -81,12 +81,11 @@ describe("ai queue service", () => {
       "generate-ai-response",
       expect.objectContaining({
         jobData: { prompt: "Generate something" },
-        dbJobId: "job-456",
+        jobId: "job-456",
         isLastStep: false,
         isMail: false,
       }),
       expect.objectContaining({
-        jobId: "job-456",
         attempts: 3,
         priority: 7,
       }),
