@@ -1,4 +1,3 @@
-import type { SendmailOptions } from "./mail.types.ts";
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 import configKeys from "../../config/config.keys.ts";
