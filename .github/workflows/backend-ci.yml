@@ -14,6 +14,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: postgresql://queueforge:queueforge@localhost:5432/queueforge  
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
