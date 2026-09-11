@@ -55,8 +55,8 @@ jobRouter.post(
   "/imageProcessing",
   jobCreationRateLimiter,
   userAuthValidator,
-  createImageProcessingJobValidator,
   upload.single("image"),
+  createImageProcessingJobValidator,
   createImageProcessingJobController,
 );
 

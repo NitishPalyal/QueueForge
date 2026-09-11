@@ -7,7 +7,7 @@ export default async function (job) {
     }
     const jobPayload = ImageWorkerProcessingServiceDataSchema.parse(job.data);
     await imageProcessingService({
-        jobId: jobPayload.dbJobId || jobId,
+        jobId: jobPayload.jobId || jobId,
         uploadedImageKey: jobPayload.jobData.uploadedImageKey,
     });
 }

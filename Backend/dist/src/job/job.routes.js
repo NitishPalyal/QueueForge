@@ -10,7 +10,7 @@ jobRouter.post("/sendMail", jobCreationRateLimiter, userAuthValidator, createEma
 // CREATE AI RESPONSE JOB //
 jobRouter.post("/aiReponse", jobCreationRateLimiter, userAuthValidator, createAiResponseJobValidator, createAiResponseJobController);
 // CREATE IMAGE PROCESSING JOB //
-jobRouter.post("/imageProcessing", jobCreationRateLimiter, userAuthValidator, createImageProcessingJobValidator, upload.single("image"), createImageProcessingJobController);
+jobRouter.post("/imageProcessing", jobCreationRateLimiter, userAuthValidator, upload.single("image"), createImageProcessingJobValidator, createImageProcessingJobController);
 // GET ALL JOBS //
 jobRouter.get("/getAllJobs", userAuthValidator, dbOperationRateLimiter, getAllJobsController);
 // GET JOB/:ID //

@@ -2,6 +2,9 @@ import { Worker } from "bullmq";
 import { connection } from "../../shared/connection.ts";
 import os from "node:os";
 import { logger } from "../../shared/logger.ts";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import * as jobRepo from "../../job/job.repository.ts";
 import {
@@ -13,7 +16,14 @@ import path from "node:path";
 
 export const imageWorker = new Worker(
   "image",
-  path.join(process.cwd(), "src", "queues", "image", "image.processor.ts"),
+  join(
+    dirname(fileURLToPath(import.meta.url)),
+    existsSync(
+      join(dirname(fileURLToPath(import.meta.url)), "image.processor.js"),
+    )
+      ? "image.processor.js"
+      : "image.processor.ts",
+  ),
   {
     connection,
     removeOnComplete: {

@@ -107,7 +107,7 @@ export async function imageProcessingService({ jobId, uploadedImageKey, }) {
 // ADD JOB IN IMAGE QUEUE//
 export async function addJobInImageQueueService({ jobId, uploadedImageKey, batchId, isLastStep, priority, }) {
     try {
-        imageQueue.add("image", {
+        await imageQueue.add("image", {
             jobData: { uploadedImageKey },
             jobId,
             batchId,

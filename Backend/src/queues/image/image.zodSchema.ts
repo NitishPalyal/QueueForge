@@ -17,13 +17,13 @@ export const ImageJobDataSchema = z.object({
  *
  * Fields:
  * - jobData: { uploadedImageKey }
- * - dbJobId: persisted database job identifier
+ * - jobId: persisted database job identifier
  * - batchId: batch identifier when the job is part of a flow
  * - isLastStep: marks the last step in a sequence of queued actions
  */
 export const ImageWorkerProcessingServiceDataSchema = z.object({
   jobData: ImageJobDataSchema,
-  dbJobId: z.string().optional(),
+  jobId: z.string(),
   batchId: z.string().optional(),
   isLastStep: z.boolean(),
 });

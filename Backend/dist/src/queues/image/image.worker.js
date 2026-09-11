@@ -2,11 +2,16 @@ import { Worker } from "bullmq";
 import { connection } from "../../shared/connection.js";
 import os from "node:os";
 import { logger } from "../../shared/logger.js";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import * as jobRepo from "../../job/job.repository.js";
 import { setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
 import { WorkerSchema } from "../../shared/zod.schema.js";
 import path from "node:path";
-export const imageWorker = new Worker("image", path.join(process.cwd(), "src", "queues", "image", "image.processor.ts"), {
+export const imageWorker = new Worker("image", join(dirname(fileURLToPath(import.meta.url)), existsSync(join(dirname(fileURLToPath(import.meta.url)), "image.processor.js"))
+    ? "image.processor.js"
+    : "image.processor.ts"), {
     connection,
     removeOnComplete: {
         age: 3600, // 1 hour

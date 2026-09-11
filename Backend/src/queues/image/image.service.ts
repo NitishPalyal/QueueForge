@@ -178,7 +178,7 @@ export async function addJobInImageQueueService({
   priority,
 }: addJobInImageQueueServiceParam) {
   try {
-    imageQueue.add(
+    await imageQueue.add(
       "image",
       {
         jobData: { uploadedImageKey },
