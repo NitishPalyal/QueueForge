@@ -1,8 +1,9 @@
 import { QueueEvents } from "bullmq";
 import { triggerEvent } from "../../notification/notification.service.ts";
 import { EventStatus } from "../../shared/types.ts";
+import { connection } from "../../shared/connection.ts";
 
-const imageEvents = new QueueEvents("image");
+const imageEvents = new QueueEvents("image", { connection });
 
 imageEvents.on("waiting", async ({ jobId }) => {
   await triggerEvent({

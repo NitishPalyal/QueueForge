@@ -1,8 +1,9 @@
 import { QueueEvents } from "bullmq";
 import { triggerEvent } from "../../notification/notification.service.ts";
 import { EventStatus } from "../../shared/types.ts";
+import { connection } from "../../shared/connection.ts";
 
-const emailEvents = new QueueEvents("mail");
+const emailEvents = new QueueEvents("mail", { connection });
 
 emailEvents.on("waiting", async ({ jobId }) => {
   await triggerEvent({
