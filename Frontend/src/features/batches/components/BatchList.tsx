@@ -61,6 +61,7 @@ export const BatchList: React.FC = () => {
                 <th>Batch ID</th>
                 <th>Flow Pipeline Type</th>
                 <th>Total Steps</th>
+                <th>Status</th>
                 <th>Created At</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
@@ -73,6 +74,9 @@ export const BatchList: React.FC = () => {
                     <Badge type="custom" label={batch.type} />
                   </td>
                   <td>{batch.totalSteps} steps</td>
+                  <td>
+                    <Badge type="status" value={batch.status} />
+                  </td>
                   <td>{dayjs(batch.createdAt).format('MMM D, YYYY HH:mm:ss')}</td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem' }}>

@@ -3,7 +3,7 @@ import { connection } from "../../shared/connection.js";
 import { logger } from "../../shared/logger.js";
 import { sendEmailService } from "./mail.service.js";
 import * as jobRepo from "../../job/job.repository.js";
-import { setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
+import { setBatchStatusActiveService, setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
 import { WorkerSchema } from "../../shared/zod.schema.js";
 export const mailWorker = new Worker("mail", async (job) => {
     const { to, subject, html } = job.data.jobData;
@@ -25,7 +25,10 @@ mailWorker.on("active", (job) => {
     const jobPayload = WorkerSchema.parse(job.data);
     logger.info(`Updating job attempt in MAIL WORKER for ID: ${job.data.dbJobId || job.id}`, "mail.worker");
     Promise.all([
-        jobRepo.setStatusActive(jobPayload.jobId),
+        setBatchStatusActiveService({
+            dbJobId: jobPayload.jobId,
+            batchId: jobPayload.batchId,
+        }),
         jobRepo.updateJobAttempt(jobPayload.jobId),
     ]);
 });

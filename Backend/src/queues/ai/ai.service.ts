@@ -179,7 +179,7 @@ export async function addJobInAiQueueService({
   priority,
 }: AiQueuePayload) {
   try {
-    aiQueue.add(
+    await aiQueue.add(
       "generate-ai-response",
       {
         jobData: payload,
@@ -189,6 +189,7 @@ export async function addJobInAiQueueService({
         isMail, // Keep this for worker to determine which handler to use
       },
       {
+        jobId,
         backoff: { type: "exponential", delay: 3000 },
         attempts: 3,
         ...(priority !== undefined ? { priority } : {}),

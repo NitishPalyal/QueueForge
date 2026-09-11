@@ -13,6 +13,7 @@ import type { EventStatus } from "../shared/types.ts";
  */
 export interface TriggerEventPayload {
   jobId: string;
+  batchId?: string;
   status: EventStatus;
   message: string;
   queue: string;

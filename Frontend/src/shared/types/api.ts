@@ -141,6 +141,7 @@ export interface BatchBenchmarkResult {
 // Real-Time Socket Event Payload
 export interface SocketJobUpdateEvent {
   jobId: string;
+  batchId?: string;
   status: number; // 0=waiting, 1=active, 2=completed, 3=failed
   message: string;
   queue: QueueName;

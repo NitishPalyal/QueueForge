@@ -7,8 +7,12 @@ const imageQueue = new Queue("image", { connection });
 async function publishImageEvent({ jobId, status, message, }) {
     const job = await imageQueue.getJob(jobId);
     const databaseJobId = job?.data && typeof job.data.jobId === "string" ? job.data.jobId : jobId;
+    const batchId = job?.data && typeof job.data.batchId === "string"
+        ? job.data.batchId
+        : undefined;
     await triggerEvent({
         jobId: databaseJobId,
+        batchId,
         status,
         message,
         queue: "imageQueue",

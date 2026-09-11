@@ -4,6 +4,7 @@ import { logger } from "../../shared/logger.ts";
 import { sendEmailService } from "./mail.service.ts";
 import * as jobRepo from "../../job/job.repository.ts";
 import {
+  setBatchStatusActiveService,
   setBatchStatusCompletedService,
   setBatchStatusFailedService,
 } from "../../batchJob/batchJob.service.ts";
@@ -39,7 +40,10 @@ mailWorker.on("active", (job) => {
     "mail.worker",
   );
   Promise.all([
-    jobRepo.setStatusActive(jobPayload.jobId),
+    setBatchStatusActiveService({
+      dbJobId: jobPayload.jobId,
+      batchId: jobPayload.batchId,
+    }),
     jobRepo.updateJobAttempt(jobPayload.jobId),
   ]);
 });

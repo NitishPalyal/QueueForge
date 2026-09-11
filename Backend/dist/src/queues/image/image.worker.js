@@ -6,7 +6,7 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as jobRepo from "../../job/job.repository.js";
-import { setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
+import { setBatchStatusActiveService, setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
 import { WorkerSchema } from "../../shared/zod.schema.js";
 import path from "node:path";
 export const imageWorker = new Worker("image", join(dirname(fileURLToPath(import.meta.url)), existsSync(join(dirname(fileURLToPath(import.meta.url)), "image.processor.js"))
@@ -28,7 +28,10 @@ imageWorker.on("active", (job) => {
     const jobPayload = WorkerSchema.parse(job.data);
     logger.info(`Updating job attempt in IMAGE WORKER for ID: ${job.data.dbJobId || job.id}`, "image.worker");
     Promise.all([
-        jobRepo.setStatusActive(jobPayload.jobId),
+        setBatchStatusActiveService({
+            dbJobId: jobPayload.jobId,
+            batchId: jobPayload.batchId,
+        }),
         jobRepo.updateJobAttempt(jobPayload.jobId),
     ]);
 });

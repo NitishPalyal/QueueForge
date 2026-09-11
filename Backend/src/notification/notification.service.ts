@@ -10,6 +10,7 @@ import type { TriggerEventPayload } from "./notification.types.ts";
  */
 export async function triggerEvent({
   jobId,
+  batchId,
   status,
   message,
   queue,
@@ -20,6 +21,7 @@ export async function triggerEvent({
     "job-events",
     JSON.stringify({
       jobId,
+      ...(batchId ? { batchId } : {}),
       status,
       message,
       queue,

@@ -187,6 +187,7 @@ export async function addJobInImageQueueService({
         isLastStep,
       },
       {
+        jobId,
         backoff: { type: "exponential", delay: 3000 },
         attempts: 3,
         ...(priority !== undefined ? { priority } : {}),

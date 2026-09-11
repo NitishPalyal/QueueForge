@@ -102,6 +102,18 @@ export async function setBatchStatusCompletedService({ dbJobId, batchId, isLastS
         throw error;
     }
 }
+export async function setBatchStatusActiveService({ dbJobId, batchId, }) {
+    try {
+        await JobRepo.setStatusActive(dbJobId);
+        if (batchId) {
+            await BatchJobRepo.setStatusActive(batchId);
+        }
+    }
+    catch (error) {
+        logger.error("Error in setBatchStatusActiveService", "batchJob.service", error);
+        throw error;
+    }
+}
 export async function setBatchStatusFailedService({ dbJobId, batchId, isLastStep, error, }) {
     try {
         await JobRepo.setStatusFailed(dbJobId, error);

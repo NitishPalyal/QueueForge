@@ -3,7 +3,7 @@ import { connection } from "../../shared/connection.js";
 import { logger } from "../../shared/logger.js";
 import * as jobRepo from "../../job/job.repository.js";
 import { generateAiResponseForEmailService, generateAiResponseService, } from "./ai.service.js";
-import { setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
+import { setBatchStatusActiveService, setBatchStatusCompletedService, setBatchStatusFailedService, } from "../../batchJob/batchJob.service.js";
 import { AiWorkerAiResponseDataSchema, AiWorkerEmailServiceDataSchema, } from "./ai.zodSchema.js";
 import { WorkerSchema } from "../../shared/zod.schema.js";
 /**
@@ -52,7 +52,10 @@ aiWorker.on("active", (job) => {
     const jobPayload = WorkerSchema.parse(job.data);
     logger.info(`Updating job attempt in AI WORKER for ID: ${job.data.dbJobId || job.id}`, "ai.worker");
     Promise.all([
-        jobRepo.setStatusActive(jobPayload.jobId),
+        setBatchStatusActiveService({
+            dbJobId: jobPayload.jobId,
+            batchId: jobPayload.batchId,
+        }),
         jobRepo.updateJobAttempt(jobPayload.jobId),
     ]);
 });

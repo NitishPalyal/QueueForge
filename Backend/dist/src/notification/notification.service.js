@@ -6,9 +6,10 @@ import { publisher } from "./notification.publisher.js";
  * This allows Socket.IO subscribers to notify connected clients in real time
  * whenever a worker changes a job status.
  */
-export async function triggerEvent({ jobId, status, message, queue, timestamp, type, }) {
+export async function triggerEvent({ jobId, batchId, status, message, queue, timestamp, type, }) {
     await publisher.publish("job-events", JSON.stringify({
         jobId,
+        ...(batchId ? { batchId } : {}),
         status,
         message,
         queue,

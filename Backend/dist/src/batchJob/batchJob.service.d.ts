@@ -2,6 +2,10 @@ import type { Batch, Job } from "../../generated/prisma/client.ts";
 import { type createBatchParam, type setBatchStatusCompletedParam, type getAllBatchesServiceParams, type setBatchStatusFailedParam } from "./batchJob.types.ts";
 export declare function createBatchService({ steps, }: createBatchParam): Promise<Batch>;
 export declare function setBatchStatusCompletedService({ dbJobId, batchId, isLastStep, }: setBatchStatusCompletedParam): Promise<void>;
+export declare function setBatchStatusActiveService({ dbJobId, batchId, }: {
+    dbJobId: string;
+    batchId: string | undefined;
+}): Promise<void>;
 export declare function setBatchStatusFailedService({ dbJobId, batchId, isLastStep, error, }: setBatchStatusFailedParam): Promise<void>;
 export declare function getBatchJobsService(batchId: string): Promise<Job[]>;
 export declare function deleteBatchService(batchId: string): Promise<void>;

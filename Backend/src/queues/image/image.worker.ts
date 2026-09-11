@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 
 import * as jobRepo from "../../job/job.repository.ts";
 import {
+  setBatchStatusActiveService,
   setBatchStatusCompletedService,
   setBatchStatusFailedService,
 } from "../../batchJob/batchJob.service.ts";
@@ -46,7 +47,10 @@ imageWorker.on("active", (job) => {
     "image.worker",
   );
   Promise.all([
-    jobRepo.setStatusActive(jobPayload.jobId),
+    setBatchStatusActiveService({
+      dbJobId: jobPayload.jobId,
+      batchId: jobPayload.batchId,
+    }),
     jobRepo.updateJobAttempt(jobPayload.jobId),
   ]);
 });

@@ -7,6 +7,7 @@ import {
   generateAiResponseService,
 } from "./ai.service.ts";
 import {
+  setBatchStatusActiveService,
   setBatchStatusCompletedService,
   setBatchStatusFailedService,
 } from "../../batchJob/batchJob.service.ts";
@@ -71,7 +72,10 @@ aiWorker.on("active", (job) => {
     "ai.worker",
   );
   Promise.all([
-    jobRepo.setStatusActive(jobPayload.jobId),
+    setBatchStatusActiveService({
+      dbJobId: jobPayload.jobId,
+      batchId: jobPayload.batchId,
+    }),
     jobRepo.updateJobAttempt(jobPayload.jobId),
   ]);
 });

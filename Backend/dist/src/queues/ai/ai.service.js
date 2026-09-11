@@ -133,13 +133,14 @@ export async function generateAiResponseForEmailService({ prompt, to, jobId, bat
 // ADD JOB IN AI QUEUE//
 export async function addJobInAiQueueService({ payload, isMail, batchId, isLastStep, jobId, priority, }) {
     try {
-        aiQueue.add("generate-ai-response", {
+        await aiQueue.add("generate-ai-response", {
             jobData: payload,
             jobId,
             batchId,
             isLastStep,
             isMail, // Keep this for worker to determine which handler to use
         }, {
+            jobId,
             backoff: { type: "exponential", delay: 3000 },
             attempts: 3,
             ...(priority !== undefined ? { priority } : {}),

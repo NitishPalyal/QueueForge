@@ -1,1 +1,1 @@
-{"version":3,"file":"mail.worker.d.ts","sourceRoot":"","sources":["../../../../src/queues/mail/mail.worker.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,QAAQ,CAAC;AAYhC,eAAO,MAAM,UAAU,0BAmBtB,CAAC"}
+{"version":3,"file":"mail.worker.d.ts","sourceRoot":"","sources":["../../../../src/queues/mail/mail.worker.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAE,MAAM,QAAQ,CAAC;AAahC,eAAO,MAAM,UAAU,0BAmBtB,CAAC"}

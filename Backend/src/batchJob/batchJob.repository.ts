@@ -44,7 +44,7 @@ export async function setStatusActive(id: string) {
 }
 
 export async function setStatusCompleted(id: string) {
-  await prisma.job.update({
+  await prisma.batch.update({
     where: { id },
     data: {
       status: Status.completed,
