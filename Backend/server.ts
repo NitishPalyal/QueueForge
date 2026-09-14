@@ -1,4 +1,5 @@
 import app from "./src/app.ts";
+import "./src/queues/worker.ts";
 import http from "http";
 import { prisma } from "./src/config/config.database.ts";
 import { startNotificationSubscriber } from "./src/notification/notification.server.ts";
