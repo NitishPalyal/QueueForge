@@ -21,14 +21,6 @@ export const getSocket = (): Socket => {
       transports: ["websocket", "polling"],
     });
 
-    socket.on("connect", () => {
-      console.log("[QueueForge Socket] Connected:", socket?.id);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("[QueueForge Socket] Disconnected");
-    });
-
     // Real-Time Job Update Event Handler
     socket.on("job-update", (event: SocketJobUpdateEvent) => {
       const statusByEvent: Record<number, JobStatus> = {

@@ -67,10 +67,6 @@ export const aiWorker = new Worker(
 aiWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
 
-  logger.info(
-    `Updating job attempt in AI WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
-    "ai.worker",
-  );
   Promise.all([
     setBatchStatusActiveService({
       dbJobId: jobPayload.jobId,

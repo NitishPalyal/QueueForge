@@ -7,7 +7,6 @@ import { providers } from "./ai.providers.js";
 // GENERATE AI CONTENT //
 export async function generateAiContentService(prompt) {
     for (const provider of providers) {
-        logger.debug(`Trying provider: ${provider.name}`, "ai.service");
         for (const model of provider.models) {
             try {
                 const result = await model.generate(prompt);

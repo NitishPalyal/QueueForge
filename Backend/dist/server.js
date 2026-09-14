@@ -1,4 +1,5 @@
 import app from "./src/app.js";
+import "./src/queues/worker.js";
 import http from "http";
 import { prisma } from "./src/config/config.database.js";
 import { startNotificationSubscriber } from "./src/notification/notification.server.js";
@@ -14,14 +15,11 @@ initializeSocket(httpServer);
 // Start Redis Subscriber
 await startNotificationSubscriber();
 // Start server
-httpServer.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+httpServer.listen(PORT, () => { });
 // Graceful shutdown
 async function gracefulShutdown() {
     await prisma.$disconnect();
     httpServer.close(() => {
-        console.log("Server closed, DB disconnected");
         process.exit(0);
     });
 }

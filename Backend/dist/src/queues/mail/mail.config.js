@@ -20,9 +20,7 @@ const transporter = nodemailer.createTransport({
 });
 transporter
     .verify()
-    .then(() => {
-    logger.info("Email transporter is ready to send emails", "mail.config");
-})
+    .then(() => { })
     .catch((err) => {
     logger.error("Email transporter verification failed", "mail.config", err);
 });

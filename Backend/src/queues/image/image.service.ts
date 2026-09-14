@@ -56,11 +56,6 @@ export async function downloadFromStorageService(
   uploadedImageKey: string,
 ): Promise<Buffer> {
   try {
-    logger.debug(
-      `Started downloading image from service: ${uploadedImageKey}`,
-      "image.service",
-    );
-
     const response = await b2.send(
       new GetObjectCommand({
         Bucket: process.env.B2_BUCKET_NAME,
@@ -69,11 +64,6 @@ export async function downloadFromStorageService(
     );
 
     const buffer = Buffer.from(await response.Body!.transformToByteArray());
-
-    logger.debug(
-      `Image download completed successfully: ${buffer.length} bytes`,
-      "image.service",
-    );
 
     return buffer;
   } catch (error) {
@@ -85,19 +75,11 @@ export async function downloadFromStorageService(
 // DELETE IMAGE FROM STORAGE SERVICE //
 export async function deleteFromStorageService(uploadedImageKey: string) {
   try {
-    logger.debug(
-      `Started deleting image: ${uploadedImageKey}`,
-      "image.service",
-    );
     await b2.send(
       new DeleteObjectCommand({
         Bucket: process.env.B2_BUCKET_NAME,
         Key: uploadedImageKey,
       }),
-    );
-    logger.debug(
-      `Image deleted successfully: ${uploadedImageKey}`,
-      "image.service",
     );
   } catch (error) {
     logger.error("Error in deleteFromStorageService", "image.service", error);
@@ -137,15 +119,7 @@ export async function imageProcessingService({
   uploadedImageKey,
 }: imageProcessingService) {
   try {
-    logger.debug(
-      `Starting image processing for key: ${uploadedImageKey}`,
-      "image.service",
-    );
     const inputBuffer = await downloadFromStorageService(uploadedImageKey);
-    logger.debug(
-      `Image downloaded successfully, size: ${inputBuffer.length} bytes`,
-      "image.service",
-    );
     const outputBuffer = await sharp(inputBuffer)
       .resize(1920, 1920, { fit: "inside", withoutEnlargement: true })
       .webp({ quality: 80 })

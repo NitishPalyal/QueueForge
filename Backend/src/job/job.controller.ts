@@ -140,13 +140,11 @@ export async function createImageProcessingJobController(
   res: Response<APIResponse>,
 ) {
   try {
-    console.log("syifpewhfewifewuo ewuhuoe foew suiiiiii");
     const idempotency_key = req.get("idempotency_key");
     const priorityRaw = req.get("priority");
     const parsedPriority = priorityRaw ? Number(priorityRaw) : undefined;
 
     if (!idempotency_key) {
-      console.log("no key");
       return res.status(400).json({
         success: false,
         message: "Idempotency_key is required",
@@ -159,7 +157,6 @@ export async function createImageProcessingJobController(
       parsedPriority < 1 ||
       parsedPriority > 10
     ) {
-      console.log("no priority");
       return res.status(400).json({
         success: false,
         message: "Priority header must be an integer between 1 and 10.",
@@ -171,7 +168,6 @@ export async function createImageProcessingJobController(
     const file = req.file;
 
     if (!file) {
-      console.log("no file");
       return res.status(400).json({
         success: false,
         message: "Image file is required.",

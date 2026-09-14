@@ -20,15 +20,12 @@ initializeSocket(httpServer);
 await startNotificationSubscriber();
 
 // Start server
-httpServer.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+httpServer.listen(PORT, () => {});
 
 // Graceful shutdown
 async function gracefulShutdown() {
   await prisma.$disconnect();
   httpServer.close(() => {
-    console.log("Server closed, DB disconnected");
     process.exit(0);
   });
 }

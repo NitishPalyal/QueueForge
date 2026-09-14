@@ -2,7 +2,6 @@ import configKeys from "./config/config.keys.ts";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import morgan from "morgan";
 import authRouter from "./auth/auth.routes.ts";
 import batchJobRouter from "./batchJob/batchJob.routes.ts";
 import jobRouter from "./job/job.routes.ts";
@@ -12,7 +11,6 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(morgan("dev"));
 app.use(
   cors({
     origin: configKeys.FRONTEND_URL || "http://localhost:5173",

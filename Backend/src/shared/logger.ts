@@ -5,12 +5,10 @@
  * Can be extended to support multiple transports (file, external services, etc.)
  * in the future.
  *
- * Environment-aware:
- * - Development: shows debug logs and detailed error stacks
- * - Production: shows only info, warn, and error logs
+ * Emits only warnings and errors suitable for production diagnostics.
  */
 
-type LogLevel = "debug" | "info" | "warn" | "error";
+type LogLevel = "warn" | "error";
 
 interface LogEntry {
   timestamp: string;
@@ -18,25 +16,6 @@ interface LogEntry {
   message: string;
   context?: string;
   data?: unknown;
-}
-
-/**
- * Determines if a log entry should be displayed based on environment and level.
- */
-function shouldLog(level: LogLevel): boolean {
-  const isDevelopment = process.env.NODE_ENV !== "production";
-
-  // In development, log everything
-  if (isDevelopment) {
-    return true;
-  }
-
-  // In production, skip debug logs
-  if (level === "debug") {
-    return false;
-  }
-
-  return true;
 }
 
 /**
@@ -56,8 +35,6 @@ function formatLogEntry(entry: any): string {
  */
 function getLevelColor(level: LogLevel): string {
   const colors: Record<LogLevel, string> = {
-    debug: "\x1b[36m", // Cyan
-    info: "\x1b[32m", // Green
     warn: "\x1b[33m", // Yellow
     error: "\x1b[31m", // Red
   };
@@ -69,52 +46,10 @@ function getLevelColor(level: LogLevel): string {
  */
 export const logger = {
   /**
-   * Debug level - detailed diagnostic information.
-   * Only shown in development.
-   */
-  debug(message: string, context?: string, data?: unknown): void {
-    if (!shouldLog("debug")) return;
-
-    const entry = {
-      timestamp: new Date().toISOString(),
-      level: "debug" as const,
-      message,
-      context,
-      data,
-    };
-
-    const color = getLevelColor("debug");
-    const reset = "\x1b[0m";
-    console.log(`${color}${formatLogEntry(entry)}${reset}`, data || "");
-  },
-
-  /**
-   * Info level - general informational messages.
-   * Shows in both development and production.
-   */
-  info(message: string, context?: string, data?: unknown): void {
-    if (!shouldLog("info")) return;
-
-    const entry = {
-      timestamp: new Date().toISOString(),
-      level: "info" as const,
-      message,
-      context,
-      data,
-    };
-
-    const color = getLevelColor("info");
-    const reset = "\x1b[0m";
-    console.log(`${color}${formatLogEntry(entry)}${reset}`, data || "");
-  },
-
-  /**
    * Warn level - warning messages for potentially problematic situations.
-   * Shows in both development and production.
+   * Reports potentially problematic situations.
    */
   warn(message: string, context?: string, data?: unknown): void {
-    if (!shouldLog("warn")) return;
-
     const entry = {
       timestamp: new Date().toISOString(),
       level: "warn" as const,
@@ -130,11 +65,9 @@ export const logger = {
 
   /**
    * Error level - error messages for failures and exceptions.
-   * Shows in both development and production.
+   * Reports failures and exceptions.
    */
   error(message: string, context?: string, error?: unknown): void {
-    if (!shouldLog("error")) return;
-
     const entry = {
       timestamp: new Date().toISOString(),
       level: "error" as const,

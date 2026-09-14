@@ -18,8 +18,6 @@ export async function generateAiContentService(
   prompt: string,
 ): Promise<string> {
   for (const provider of providers) {
-    logger.debug(`Trying provider: ${provider.name}`, "ai.service");
-
     for (const model of provider.models) {
       try {
         const result = await model.generate(prompt);

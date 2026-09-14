@@ -35,10 +35,6 @@ export const mailWorker = new Worker(
 mailWorker.on("active", (job) => {
   const jobPayload = WorkerSchema.parse(job.data);
 
-  logger.info(
-    `Updating job attempt in MAIL WORKER for ID: ${job.data.dbJobId || (job.id as string)}`,
-    "mail.worker",
-  );
   Promise.all([
     setBatchStatusActiveService({
       dbJobId: jobPayload.jobId,

@@ -1,4 +1,5 @@
 export type CONFIG = {
+    readonly FRONTEND_URL: string;
     readonly DATABASE_URL: string;
     readonly PORT: string;
     readonly JWT_SECRET: string;
